@@ -28,6 +28,5 @@ function [output] = Newton(x, y, p)
        interpolation_table(j) = a(j) .* polynomial(j);
     end
     output=sum(interpolation_table);
-    disp(polynomial);
 end
 

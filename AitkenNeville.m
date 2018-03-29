@@ -7,6 +7,5 @@ function output = AitkenNeville(X, Y, p)
          polynomial(j,i+1) = ((p-X(j))*polynomial(j+1,i) + (X(j+i)-p)*polynomial(j,i))/(X(j+i)-X(j));
       end
    end
-   disp(polynomial);
    output = polynomial(1 , input_size);
 end

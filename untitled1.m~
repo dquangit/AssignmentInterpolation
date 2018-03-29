@@ -79,18 +79,14 @@ function pushbutton1_Callback(hObject, eventdata, handles)
   'Select Data File');
   cd(filepath1);
   rawdata1=load([filepath1 filename1]);
-
-
-  n = length(rawdata1);
+  p = bar(rawdata1);
+  set(p, 'Parent', handles.axes1);
   datasetX = zeros(1, n);
   for i = 1 : n 
     datasetX(1, i) = i;
   end
-  
   lagrange = MatrixLagrange(datasetX, rawdata1);
-  p = plot(rawdata1); hold on;
-  p = plot(lagrange);
-  set(p, 'Parent', handles.axes1);
+  set(plot()
   setappdata(0, 'datasetY', rawdata1);
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -109,6 +105,7 @@ ListBoxString = get(handles.listbox1,'String');
 ListBoxValue = get(handles.listbox1,'Value'); 
 setappdata(0, 'ListBoxString', ListBoxString);
 setappdata(0, 'ListBoxValue', ListBoxValue);
+disp(ListBoxValue);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -138,12 +135,17 @@ ListBoxValue = getappdata(0,'ListBoxValue');
 startX = str2double(get(handles.startValue, 'String'));
 
 if (ListBoxValue == 1)
+    disp('Lagrange');
     output = Lagrange(datasetX, datasetY, startX);
 elseif (ListBoxValue == 2)
+    disp('Newton');
     output = Newton(datasetX, datasetY, startX);
 else
+    disp('Aitken')
     output = AitkenNeville(datasetX, datasetY, startX);
 end
+
+disp(output);
 set(handles.result, 'string', num2str(output));
 
 
