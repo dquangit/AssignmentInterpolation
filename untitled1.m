@@ -88,7 +88,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
   end
   
   lagrange = MatrixLagrange(datasetX, rawdata1);
-  p = plot(rawdata1); hold on;
+  p = bar(rawdata1); hold on;
   p = plot(lagrange);
   set(p, 'Parent', handles.axes1);
   setappdata(0, 'datasetY', rawdata1);
