@@ -1,5 +1,5 @@
 function output = AitkenNeville(X, Y, p)
-   input_size = length(X);
+   input_size = length(Y);
    polynomial = zeros(input_size,input_size);
    polynomial(:,1) = Y(:);
    for i = 1 : input_size - 1
@@ -8,4 +8,5 @@ function output = AitkenNeville(X, Y, p)
       end
    end
    output = polynomial(1 , input_size);
+   disp(output);
 end

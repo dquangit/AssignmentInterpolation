@@ -1,5 +1,5 @@
 function [output] = Newton(x, y, p)
-    input_size = length(x);
+    input_size = length(y);
     a(1) = y(1);
 
     % Ti hieu cap 1 divice_subtract_table[i, j] = (yi - yj)/(xi - yj)

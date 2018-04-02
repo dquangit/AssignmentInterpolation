@@ -87,9 +87,19 @@ function pushbutton1_Callback(hObject, eventdata, handles)
     datasetX(1, i) = i;
   end
   
-  lagrange = MatrixLagrange(datasetX, rawdata1);
+  listBoxValue = get(handles.listbox1,'Value'); 
+ 
+  if (listBoxValue == 1)
+      interpolation_data = MatrixLagrange(datasetX, rawdata1);
+  elseif (listBoxValue == 2)
+      interpolation_data = MatrixNewton(datasetX, rawdata1);
+  else 
+      interpolation_data = AitkenNevilleMatrix(datasetX, rawdata1);
+  end
+  
+  hold off;
   p = bar(rawdata1); hold on;
-  p = plot(lagrange);
+  %p = plot(interpolation_data);
   set(p, 'Parent', handles.axes1);
   setappdata(0, 'datasetY', rawdata1);
 % hObject    handle to pushbutton1 (see GCBO)
@@ -105,10 +115,30 @@ function listbox1_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns listbox1 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from listbox1
-ListBoxString = get(handles.listbox1,'String'); 
-ListBoxValue = get(handles.listbox1,'Value'); 
+    ListBoxString = get(handles.listbox1,'String'); 
+    listBoxValue = get(handles.listbox1,'Value'); 
+
+    datasetY = getappdata(0, 'datasetY');
+    n = length(datasetY);
+    datasetX = zeros(1, n);
+    for i = 1 : n 
+        datasetX(1, i) = i;
+    end
+
+      if (listBoxValue == 1)
+          interpolation_data = MatrixLagrange(datasetX, datasetY);
+      elseif (listBoxValue == 2)
+          interpolation_data = MatrixNewton(datasetX, datasetY);
+      else 
+          interpolation_data = AitkenNevilleMatrix(datasetX, datasetY);
+      end
+  hold off;
+  p = bar(datasetY); hold on;
+  p = plot(interpolation_data);
+  set(p, 'Parent', handles.axes1);
+
 setappdata(0, 'ListBoxString', ListBoxString);
-setappdata(0, 'ListBoxValue', ListBoxValue);
+setappdata(0, 'ListBoxValue', listBoxValue);
 
 
 % --- Executes during object creation, after setting all properties.
