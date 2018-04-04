@@ -134,7 +134,6 @@ function algorithmChooser_Callback(hObject, eventdata, handles)
  else
     factorDataX = factorData(1, :);
     factorDataY = factorData(2, :);
-    disp(factorDataX);
     dataPoint = strsplit(get(handles.inputTxt, 'String'));
     dataPointX = str2double(dataPoint(1));
     dataPointY = str2double(dataPoint(2));
