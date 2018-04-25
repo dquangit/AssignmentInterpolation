@@ -150,7 +150,7 @@ function algorithmChooser_Callback(hObject, eventdata, handles)
     end
  end
  
- output = round(output);
+ %output = round(output);
  disp(output);
  set(handles.resultTxt, 'string', num2str(output));
     if output <= 50 
