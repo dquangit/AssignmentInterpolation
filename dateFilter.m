@@ -22,7 +22,7 @@ function varargout = dateFilter(varargin)
 
 % Edit the above text to modify the response to help dateFilter
 
-% Last Modified by GUIDE v2.5 22-Apr-2018 08:40:00
+% Last Modified by GUIDE v2.5 26-Apr-2018 21:11:16
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -147,3 +147,17 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+date = get(handles.edit4,'string');
+month = get(handles.popupmenu2,'Factory');
+yearr = get(handles.popupmenu3,'value');
+disp(month);
+disp(yearr);
+loadfile = load('date.txt');
+[r,c] = size(loadfile);
+d = 0;
+for j = 1:c
+    if loadfile(1,j) == str2num(date) && loadfile(2,j)== month && loadfile(3,j) == year
+       d =d + j;
+    end
+end
+disp(d);
