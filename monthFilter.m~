@@ -84,7 +84,6 @@ function monthChooser_Callback(hObject, eventdata, handles)
 
 loadfileAqi = load('aqi03-072017.txt');
 n = length(loadfileAqi);
-disp(n);
 choose = get(handles.monthChooser,'value');
 switch choose
     case 1
@@ -102,28 +101,21 @@ switch choose
         %end
     case 2
         axes(handles.axes1);
+        disp(loadfileAqi(:,19:43));
         bar(loadfileAqi(:,19:43));
     case 3
         axes(handles.axes1);
+        disp(loadfileAqi(:,44:74));
         bar(loadfileAqi(:,44:74));
     case 4
         axes(handles.axes1);
-        bar(loadfileAqi(:,75:104));
+        disp(loadfileAqi(:,75:74));
+        bar(loadfileAqi(:,75:74));
     case 5
-        axes(handles.axes1);
-        bar(loadfileAqi(:,105:135));
     case 6
-        axes(handles.axes1);
-        bar(loadfileAqi(:,136:166));
     case 7
-        axes(handles.axes1);
-        bar(loadfileAqi(:,167:196));
     case 8
-        axes(handles.axes1);
-        bar(loadfileAqi(:,197:216));
     case 9
-        axes(handles.axes1);
-        bar(loadfileAqi(:,217:227));
 end
 
 

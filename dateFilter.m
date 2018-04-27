@@ -22,7 +22,7 @@ function varargout = dateFilter(varargin)
 
 % Edit the above text to modify the response to help dateFilter
 
-% Last Modified by GUIDE v2.5 26-Apr-2018 21:11:16
+% Last Modified by GUIDE v2.5 27-Apr-2018 18:34:56
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -148,16 +148,49 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 date = get(handles.edit4,'string');
-month = get(handles.popupmenu2,'Factory');
-yearr = get(handles.popupmenu3,'value');
+month = get(handles.popupmenu2,'value');
+disp(date);
 disp(month);
-disp(yearr);
-loadfile = load('date.txt');
-[r,c] = size(loadfile);
+loadfiledate = load('date.txt');
+[r,c] = size(loadfiledate);
 d = 0;
 for j = 1:c
-    if loadfile(1,j) == str2num(date) && loadfile(2,j)== month && loadfile(3,j) == year
+    if loadfiledate(1,j) == str2num(date) && loadfiledate(2,j)== month && loadfiledate(3,j) == 2017
        d =d + j;
     end
 end
 disp(d);
+if d == 0
+    msgbox('Du lieu chua duoc cap nhap');
+end
+loadfileAQI = load('aqi03-072017.txt');
+n = length(loadfileAQI);
+aqi = 0;
+for i = 1:n
+    if i==d
+        aqi = aqi+loadfileAQI(i);
+    end
+end
+
+if aqi ~= 0
+    set(handles.text5,'string',aqi);
+    if aqi <= 50
+        set(handles.text6,'String','Good');
+        set(handles.text7,'String','Air quality is considered satisfactory, and air pollution poses little or no risk');
+    elseif aqi <= 100
+        set(handles.text6,'String','Moderate');
+        set(handles.text7,'String','Air quality is acceptable; however, for some pollutants there may be a moderate health concern for a very small number of people who are unusually sensitive to air pollution.');
+    elseif aqi <= 150
+        set(handles.text6,'String','Unhealthy for Sensitive Groups');
+        set(handles.text7,'String','Members of sensitive groups may experience health effects. The general public is not likely to be affected.');
+    elseif aqi <= 200
+        set(handles.text6,'String','Unhealthy');
+        set(handles.text7,'String', 'Everyone may begin to experience health effects; members of sensitive groups may experience more serious health effects');
+    elseif aqi <= 300
+        set(handles.text6,'String','Very Unhealthy');
+        set(handles.text7, 'String', 'Health warnings of emergency conditions. The entire population is more likely to be affected.');
+    else
+        set(handles.text6,'String','Good');
+        set(handles.text7, 'String', 'Health alert: everyone may experience more serious health effects.');
+    end
+end
