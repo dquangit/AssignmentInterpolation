@@ -152,6 +152,7 @@ month = get(handles.popupmenu2,'value');
 disp(date);
 disp(month);
 loadfiledate = load('date.txt');
+disp(length(loadfiledate));
 [r,c] = size(loadfiledate);
 d = 0;
 for j = 1:c

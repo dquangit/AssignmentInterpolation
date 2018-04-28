@@ -122,31 +122,55 @@ end
 % --- Executes on button press in execute.
 function execute_Callback(hObject, eventdata, handles)
 
- if (isempty(handles.temperater))
-     
- elseif (isempty(handles.rain))
-     
- else 
-     
- end
+temp = get(handles.temperature,'String');
+ra = get(handles.rain,'String');
+factorData = load('temp03-052017.txt');
+% n = length(factorData);
+% for i = 1:n
+%     if i > 44 && i <= 75
+%         disp(factorData(i));
+%     end
+%     
+% end
+disp(length(factorData));
+aqiData = load('aqi03-072017.txt');
+n = length(aqiData);
+for i = 1:n
+    if i < 19
+        disp(aqiData(i));
+    end  
+end
+disp(length(aqiData));
+x = [-2 -1 1 2];
+y = [-6 0 0 6];
+if (~isempty(temp))
+     output = Lagrange(x, y, str2num(temp));
+    %disp(output);
+end
+if (~isempty(ra))
+     disp('b');
+end
+if (~isempty(temp) && ~isempty(ra))
+     disp('ab');
+end
 
- set(handles.result, 'string', num2str(output));
-    if output <= 50 
-        handles = setLevelAndMessage(handles, 'Good', 'Air quality is considered satisfactory, and air pollution poses little or no risk');
-    elseif output <= 100
-        handles = setLevelAndMessage(handles, 'Moderate', 'Air quality is acceptable; however, for some pollutants there may be a moderate health concern for a very small number of people who are unusually sensitive to air pollution.');
-    elseif output <= 150
-        handles = setLevelAndMessage(handles, 'Unhealthy for Sensitive Groups', 'Members of sensitive groups may experience health effects. The general public is not likely to be affected.');
-    elseif output <= 200
-        handles = setLevelAndMessage(handles, 'Unhealthy', 'Everyone may begin to experience health effects; members of sensitive groups may experience more serious health effects');
-    elseif output <= 300
-        handles = setLevelAndMessage(handles, 'Very Unhealthy', 'Health warnings of emergency conditions. The entire population is more likely to be affected.');
-    else
-        handles = setLevelAndMessage(handles, 'Hazardous', 'Health alert: everyone may experience more serious health effects.');
-    end
+%  set(handles.result, 'string', num2str(output));
+%     if output <= 50 
+%         handles = setLevelAndMessage(handles, 'Good', 'Air quality is considered satisfactory, and air pollution poses little or no risk');
+%     elseif output <= 100
+%         handles = setLevelAndMessage(handles, 'Moderate', 'Air quality is acceptable; however, for some pollutants there may be a moderate health concern for a very small number of people who are unusually sensitive to air pollution.');
+%     elseif output <= 150
+%         handles = setLevelAndMessage(handles, 'Unhealthy for Sensitive Groups', 'Members of sensitive groups may experience health effects. The general public is not likely to be affected.');
+%     elseif output <= 200
+%         handles = setLevelAndMessage(handles, 'Unhealthy', 'Everyone may begin to experience health effects; members of sensitive groups may experience more serious health effects');
+%     elseif output <= 300
+%         handles = setLevelAndMessage(handles, 'Very Unhealthy', 'Health warnings of emergency conditions. The entire population is more likely to be affected.');
+%     else
+%         handles = setLevelAndMessage(handles, 'Hazardous', 'Health alert: everyone may experience more serious health effects.');
+%     end
     guidata(hObject, handles);
-end
+    
 
 
-function output = singleVariateInterpolation(X, Y, P)
-end
+% function output = singleVariateInterpolation(X, Y, P)
+% end
