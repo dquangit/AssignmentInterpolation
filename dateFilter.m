@@ -194,6 +194,4 @@ if aqi ~= 0
         set(handles.text6,'String','Good');
         set(handles.text7, 'String', 'Health alert: everyone may experience more serious health effects.');
     end
-    close;
-    forecast;
 end
