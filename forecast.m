@@ -130,7 +130,6 @@ n = length(factorData);
 aqiData = load('aqi03-072017.txt');
 
 if (~isempty(temp))
-     
      output = Lagrange(factorData, aqiData, str2num(temp));
      disp(output);
 end
@@ -138,7 +137,7 @@ if (~isempty(ra))
      output = Newton(factorData, aqiData, str2num(ra));
 end
 if (~isempty(temp) && ~isempty(ra))
-     disp('ab');
+     output = grid
 end
 
     set(handles.result, 'string', num2str(output));
