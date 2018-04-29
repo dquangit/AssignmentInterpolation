@@ -135,7 +135,7 @@ if (~isempty(temp))
      disp(output);
 end
 if (~isempty(ra))
-     output = Newton(factorData, aqiData, str2num(ra));
+     output = Newton(factorData, aqiData, ra);
 end
 if (~isempty(temp) && ~isempty(ra))
      disp('ab');
