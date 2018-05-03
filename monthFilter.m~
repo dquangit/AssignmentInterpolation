@@ -131,7 +131,7 @@ switch choose
                 %disp(loadfileAqi(i));
             end
         end
-        bar(x);
+
     case 3
         for i =1 :c
             if loadfilemonth(2,i) == 5
@@ -140,7 +140,6 @@ switch choose
                 %disp(loadfileAqi(i));
             end
         end
-        bar(x);
     case 4
         for i =1 :c
             if loadfilemonth(2,i) == 6
@@ -149,7 +148,7 @@ switch choose
                 %disp(loadfileAqi(i));
             end
         end
-        bar(x);
+
     case 5
         for i =1 :c
             if loadfilemonth(2,i) == 7
@@ -158,7 +157,6 @@ switch choose
                 %disp(loadfileAqi(i));
             end
         end
-        bar(x);
     case 6
         for i =1 :c
             if loadfilemonth(2,i) == 8
@@ -167,7 +165,7 @@ switch choose
                 %disp(loadfileAqi(i));
             end
         end
-        bar(x);
+
     case 7
         for i =1 :c
             if loadfilemonth(2,i) == 9
@@ -176,7 +174,7 @@ switch choose
                 %disp(loadfileAqi(i));
             end
         end
-        bar(x);
+
     case 8
        for i =1 :c
             if loadfilemonth(2,i) == 10
@@ -184,17 +182,16 @@ switch choose
                x = [x,loadfileAqi(i)];
                 %disp(loadfileAqi(i));
             end
-       end
-        bar(x);
+        end
+
     case 9
         for i =1 :c
             if loadfilemonth(2,i) == 11
                 axes(handles.axes1);
-                x = [x,loadfileAqi(i)];
+                bar(loadfileAqi(i));
                 %disp(loadfileAqi(i));
             end
         end
-        bar(x);
 end
 
 
