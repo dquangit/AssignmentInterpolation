@@ -125,21 +125,29 @@ function execute_Callback(hObject, eventdata, handles)
 temp = get(handles.temperature,'String');
 ra = get(handles.rain,'String');
 
-factorData = load('temp03-052017.txt');
-n = length(factorData);
-aqiData = load('aqi03-072017.txt');
-
-if (~isempty(temp))
-     
-     output = Lagrange(factorData, aqiData, str2num(temp));
-     disp(output);
-end
-if (~isempty(ra))
-     output = Newton(factorData, aqiData, str2num(ra));
-end
-if (~isempty(temp) && ~isempty(ra))
-     disp('ab');
-end
+    aqiData = load('aqi03-072017.txt');
+    tempData = load('temp03-052017.txt');
+    rainData = load('rain03-052017.txt');
+    aqiLength = length(aqiData);
+    tempLength = length(tempData);
+    rainLength = length(rainData);
+    minimum = min([aqiLength tempLength rainLength]);
+    disp([aqiLength tempLength rainLength]);
+    aqiData = aqiData(1 : minimum);
+    tempData = tempData(1 : minimum);
+    rainData = rainData(1 : minimum);
+    output = 0;
+    if (isempty(ra) || (isempty(temp)))
+        if (isempty(ra) && isempty(temp))
+            msgbox('Invalidate input');
+        elseif (~isempty(ra))
+            output = Newton(rainData, aqiData, ra);
+        elseif (~isempty(temp))
+            output = Newton(tempData, aqiData, temp)
+        end
+    else
+        output = griddata(tempData, rainData, aqiData, str2double(temp), str2double(ra));
+    end
 
     set(handles.result, 'string', num2str(output));
     if output <= 50

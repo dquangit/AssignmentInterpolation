@@ -57,7 +57,7 @@ handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
-
+monthChooser_Callback(hObject, eventdata, handles);
 % UIWAIT makes monthFilter wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
