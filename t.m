@@ -1,17 +1,8 @@
-function [l, L] = lagrange(x, y) 
-%Dua vao : x = [x0 x1 ... xn], y = [y0 y1 ... yn] 
-%ket qua: l = He so cua da thuc Lagrange bac n 
-% L = Da thuc Lagrange  
-n = length(x) - 1; %bac cua da thucl 
-l = 0; 
-for m = 1:n + 1 
-    p = 1; 
-    for k = 1:n + 1 
-        if k ~= m 
-            p = conv(p, [1 -x(k)])/(x(m) - x(k));  
-        end 
-    end 
-    L(m, :) = p; %da thuc Lagrange  
-    l = l + y(m)*p;  
-end  
-l
+a = [1 2 2 2 2 3 4 5 2 4 6 7 8 2];
+b = [1 2 2 3 5 3 4 5 6 7 8 9 0 8];
+disp(size(a));
+disp(length(a));
+[x, y] = removeDuplicatedData(a, b);
+disp([x;y]);
+disp(size(x));
+disp(length(x));
