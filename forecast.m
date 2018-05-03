@@ -122,9 +122,14 @@ end
 % --- Executes on button press in execute.
 function execute_Callback(hObject, eventdata, handles)
 
+<<<<<<< HEAD
 temp = get(handles.temperature,'String');
 ra = get(handles.rain,'String');
     
+=======
+    temp = get(handles.temperature,'String');
+    ra = get(handles.rain,'String');
+>>>>>>> 4e092aaf157d2f4a87cf48595c8844b0323ddb23
     aqiData = load('aqi03-072017.txt');
     tempData = load('temp03-052017.txt');
     rainData = load('rain03-052017.txt');
@@ -136,19 +141,23 @@ ra = get(handles.rain,'String');
     aqiData = aqiData(1 : minimum);
     tempData = tempData(1 : minimum);
     rainData = rainData(1 : minimum);
-    output = 0;
+    
     if (isempty(ra) || (isempty(temp)))
         if (isempty(ra) && isempty(temp))
             msgbox('Invalidate input');
         elseif (~isempty(ra))
-            output = Newton(rainData, aqiData, ra);
+            [rainData, aqiData] = removeDuplicatedData(rainData, aqiData);
+            output = Lagrange(rainData, aqiData, str2double(ra));
+            disp(output);
         elseif (~isempty(temp))
-            output = Newton(tempData, aqiData, temp)
+            [tempData, aqiData] = removeDuplicatedData(tempData, aqiData);
+            output = Lagrange(tempData, aqiData, str2double(temp));
+            disp(output);
         end
     else
         output = griddata(tempData, rainData, aqiData, str2double(temp), str2double(ra));
     end
-
+    
     set(handles.result, 'string', num2str(output));
     if output <= 50
         set(handles.evaluate,'String','Good');
@@ -171,7 +180,3 @@ ra = get(handles.rain,'String');
     end
     guidata(hObject, handles);
     
-
-
-% function output = singleVariateInterpolation(X, Y, P)
-% end
