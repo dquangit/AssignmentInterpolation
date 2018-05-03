@@ -84,7 +84,7 @@ function monthChooser_Callback(hObject, eventdata, handles)
 
 loadfileAqi = load('aqi03-072017.txt');
 n = length(loadfileAqi);
-disp(n);
+%disp(n);
 choose = get(handles.monthChooser,'value');
 
 loadfilemonth = load('date.txt');

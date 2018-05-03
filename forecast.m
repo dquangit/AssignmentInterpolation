@@ -124,7 +124,7 @@ function execute_Callback(hObject, eventdata, handles)
 
 temp = get(handles.temperature,'String');
 ra = get(handles.rain,'String');
-
+    
     aqiData = load('aqi03-072017.txt');
     tempData = load('temp03-052017.txt');
     rainData = load('rain03-052017.txt');

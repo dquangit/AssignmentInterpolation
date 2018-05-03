@@ -101,7 +101,7 @@ if ~isempty(handles.showing)
 end
 menuChosen = get(handles.menu,'Value');
 if menuChosen == 1
-    handles.showing = forecast;
+    handles.showing = set(handles.p4,forecast);
 elseif menuChosen == 2
     handles.showing = dateFilter;
 elseif menuChosen == 3
