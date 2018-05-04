@@ -446,23 +446,23 @@ function pushbutton4_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+% temp = get(handles.temp,'String');
+% ra = get(handles.rain,'String');
+
 
 temp = get(handles.edit7,'String');
+
 ra = get(handles.rain,'String'); 
 
 
 aqiData = load('aqi03-072017.txt');
 tempData = load('temp03-052017.txt');
-
     rainData = load('rain03-052017.txt');
-    disp(length(rainData));
-    disp(length(aqiData));
-    disp(length(tempData));
     aqiLength = length(aqiData);
     tempLength = length(tempData);
     rainLength = length(rainData);
     minimum = min([aqiLength tempLength rainLength]);
-    %disp([aqiLength tempLength rainLength]);
+    disp([aqiLength tempLength rainLength]);
     aqiData = aqiData(1 : minimum);
     tempData = tempData(1 : minimum);
     rainData = rainData(1 : minimum);
@@ -472,23 +472,12 @@ tempData = load('temp03-052017.txt');
             msgbox('Invalidate input');
         elseif (~isempty(ra))
             [rainData, aqiData] = removeDuplicatedData(rainData, aqiData);
-            [output,x] = Lagrange(rainData, aqiData, str2double(ra));
-             axes(handles.axes4);
-             disp(output);
-             plot(x);
-             grid on;
-             hold on;
-             plot(aqiData);
+            output = Lagrange(rainData, aqiData, str2double(ra));
+            disp(output);
         elseif (~isempty(temp))
             [tempData, aqiData] = removeDuplicatedData(tempData, aqiData);
-            [output,x] = Lagrange(tempData, aqiData, str2double(temp));
-             axes(handles.axes4);
-%            x = [aqiData];
-             plot(x);
-             grid on;
-             hold on;
-             plot(aqiData);
-            
+            output = Lagrange(tempData, aqiData, str2double(temp));
+            disp(output);
         end
     else
         output = griddata(tempData, rainData, aqiData, str2double(temp), str2double(ra));
@@ -514,7 +503,6 @@ tempData = load('temp03-052017.txt');
         set(handles.evaluate,'String','Good');
         set(handles.warning, 'String', 'Health alert: everyone may experience more serious health effects.');
     end
-
 
 
 % --- Executes on button press in pushbutton5.

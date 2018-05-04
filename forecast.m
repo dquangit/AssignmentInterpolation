@@ -122,16 +122,14 @@ end
 % --- Executes on button press in execute.
 function execute_Callback(hObject, eventdata, handles)
 
-<<<<<<< HEAD
+
 temp = get(handles.temperature,'String');
 ra = get(handles.rain,'String');
-    
-=======
-    temp = get(handles.temperature,'String');
-    ra = get(handles.rain,'String');
->>>>>>> 4e092aaf157d2f4a87cf48595c8844b0323ddb23
-    aqiData = load('aqi03-072017.txt');
-    tempData = load('temp03-052017.txt');
+temp = get(handles.temperature,'String');
+ra = get(handles.rain,'String'); 
+
+aqiData = load('aqi03-072017.txt');
+tempData = load('temp03-052017.txt');
     rainData = load('rain03-052017.txt');
     aqiLength = length(aqiData);
     tempLength = length(tempData);
