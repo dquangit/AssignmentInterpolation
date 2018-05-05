@@ -190,39 +190,37 @@ end
 
 % --- Executes on button press in update.
 function update_Callback(hObject, eventdata, handles)
-dateData = load('date.txt');
+dateData = getDateData();
 date = str2double(get(handles.date, 'String'));
 month = get(handles.month,'value');
 yearChosen = get(handles.year, 'value');
 year = yearChosen + 2016;
 dateInput = [date; month; year];
-[m, n] = size(dateData);
-answer = '';
+[~, n] = size(dateData);
+update = false;
+isDuplicated = false;
 for index = 1 : n
     if isequal(dateInput, dateData(:,index))
-        answer = questdlg('Duplicate data', ...
-            'Do you want to override?', ...
-            'Yes','No thank you', 'No thank you');
+        isDuplicated = true;
         break;
     end
 end
-update = 1;
-switch answer
-    case 'Yes'
-        update = 1;
-        disp([answer ' coming right up.'])
-    case 'No thank you'
-        disp([answer ' coming right up.'])
-        update = 0;
+aqiInput = get(handles.aqi, 'String');
+tempInput = get(handles.temp, 'String');
+rainInput = get(handles.rain, 'String');
+invalidateData = false;
+if (isempty(aqiInput) || isempty(tempInput) || isempty(rainInput))
+    invalidateData = true;
 end
 
-if (update == 1)
-    aqiData = load('aqi03-072017.txt');
-    tempData = load('temp03-052017.txt');
-    rainData = load('rain03-052017.txt');
-    aqiInput = get(handles.aqi, 'String');
-    tempInput = get(handles.temp, 'String');
-    rainInput = get(handles.rain, 'String');
+if (isDuplicated)
+    msgbox('Data duplicated');
+elseif (invalidateData)
+    msgbox('Invalidated data');
+else
+    aqiData = getAqi();
+    tempData = getTemperature();
+    rainData = getRain();
     aqiLength = length(aqiData);
     tempLength = length(tempData);
     rainLength = length(rainData);
@@ -238,7 +236,15 @@ if (update == 1)
         answer = questdlg('Inputs are difference too much from interpolation result', ...
             'Do you want to continue update?', ...
             'Yes','No thank you', 'No thank you');
+        if (answer == 'Yes') 
+            update = true;
+        end
+    else 
+        update = true;
     end
+end
+
+if update
 end
 
 function aqi_Callback(hObject, eventdata, handles)
