@@ -193,6 +193,7 @@ function update_Callback(hObject, eventdata, handles)
 dateData = load('date.txt');
 date = str2double(get(handles.date, 'String'));
 month = get(handles.month,'value');
+disp(month);
 yearChosen = get(handles.year, 'value');
 year = yearChosen + 2016;
 dateInput = [date; month; year];
