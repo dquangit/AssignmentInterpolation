@@ -1,4 +1,4 @@
-function [outputArg1] = insertData(date, temp, rain, aqi)
+function insertData(date, temp, rain, aqi)
     dataPath;
     dateData = getDateData();
    
@@ -10,10 +10,10 @@ function [outputArg1] = insertData(date, temp, rain, aqi)
     elseif (dateInput > dateFromDateData(dateData(:, n)))
         insertLast(date, temp, rain, aqi);
     else
-        for index = 1 : n
-            dateElement = dateFromDateData(dateData(:,index));
-            if (dateElement == dateInput)
-                disp('Fuck');
+        for index = 1 : n - 1
+            dateBefore = dateFromDateData(dateData(:,index));
+            dateAfter = dateFromDateData(dateData(:, index + 1));
+            if ((dateInput < dateAfter) && (dateInput > dateBefore))
                 insertAtIndex(date, temp, rain, aqi, index);
                 break;
             end
@@ -25,31 +25,31 @@ function date = dateFromDateData(dateData)
     date = datetime(dateData(3), dateData(2), dateData(1));
 end
 
-function output = insertFirst(date, temp, rain, aqi)    
+function insertFirst(date, temp, rain, aqi)    
     [dateData, rainData, tempData, aqiData] = loadData();
-    dateData = [date dateData];
+    dateData = [reshape(date, [3, 1]) dateData];
     rainData = [rain rainData];
     tempData = [temp tempData];
     aqiData = [aqi aqiData];
     save(dateData, rainData, tempData, aqiData);
 end
 
-function output = insertLast(date, temp, rain, aqi)
+function insertLast(date, temp, rain, aqi)
     [dateData, rainData, tempData, aqiData] = loadData();
-    dateData = [dateData date];
+    out = [dateData reshape(date, [3, 1])];
     rainData = [rainData rain];
     tempData = [tempData temp];
     aqiData = [aqiData aqi];
-    save(dateData, rainData, tempData, aqiData);
+    save(out, rainData, tempData, aqiData);
 end
 
-function output = insertAtIndex(date, temp, rain, aqi, index)
+function insertAtIndex(date, temp, rain, aqi, index)
     [dateData, rainData, tempData, aqiData] = loadData();
     n = length(dateData);
-    dateData = [dateData(:, 1 : index) date dateData(:, index : n)];
-    rainData = [rainData(1 : index) rain];
-    tempData = [tempData temp];
-    aqiData = [aqiData aqi];
+    dateData = [dateData(:, 1 : index) reshape(date, [3, 1]) dateData(:, index + 1 : n)];
+    rainData = [rainData(1 : index) rain rainData(index + 1 : n)];
+    tempData = [tempData(1 : index) temp tempData(index + 1 : n)];
+    aqiData = [aqiData(1 : index) aqi aqiData(index + 1 : n)];
     save(dateData, rainData, tempData, aqiData);
 end
 
