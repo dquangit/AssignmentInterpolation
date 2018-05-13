@@ -22,7 +22,7 @@ function varargout = tabtest(varargin)
 
 % Edit the above text to modify the response to help tabtest
 
-% Last Modified by GUIDE v2.5 05-May-2018 10:29:12
+% Last Modified by GUIDE v2.5 13-May-2018 07:59:43
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -519,18 +519,18 @@ set(handles.uipanel2,'visible','off')
 
 
 
-function temp_Callback(hObject, eventdata, handles)
-% hObject    handle to temp (see GCBO)
+function updateTemp_Callback(hObject, eventdata, handles)
+% hObject    handle to updateTemp (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of temp as text
-%        str2double(get(hObject,'String')) returns contents of temp as a double
+% Hints: get(hObject,'String') returns contents of updateTemp as text
+%        str2double(get(hObject,'String')) returns contents of updateTemp as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function temp_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to temp (see GCBO)
+function updateTemp_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to updateTemp (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -542,18 +542,18 @@ end
 
 
 
-function rain_Callback(hObject, eventdata, handles)
-% hObject    handle to rain (see GCBO)
+function updateRain_Callback(hObject, eventdata, handles)
+% hObject    handle to updateRain (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of rain as text
-%        str2double(get(hObject,'String')) returns contents of rain as a double
+% Hints: get(hObject,'String') returns contents of updateRain as text
+%        str2double(get(hObject,'String')) returns contents of updateRain as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function rain_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to rain (see GCBO)
+function updateRain_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to updateRain (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -696,17 +696,17 @@ end
 
 
 function edit11_Callback(hObject, eventdata, handles)
-% hObject    handle to temp (see GCBO)
+% hObject    handle to updateTemp (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of temp as text
-%        str2double(get(hObject,'String')) returns contents of temp as a double
+% Hints: get(hObject,'String') returns contents of updateTemp as text
+%        str2double(get(hObject,'String')) returns contents of updateTemp as a double
 
 
 % --- Executes during object creation, after setting all properties.
 function edit11_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to temp (see GCBO)
+% hObject    handle to updateTemp (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -719,17 +719,17 @@ end
 
 
 function edit12_Callback(hObject, eventdata, handles)
-% hObject    handle to rain (see GCBO)
+% hObject    handle to updateRain (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of rain as text
-%        str2double(get(hObject,'String')) returns contents of rain as a double
+% Hints: get(hObject,'String') returns contents of updateRain as text
+%        str2double(get(hObject,'String')) returns contents of updateRain as a double
 
 
 % --- Executes during object creation, after setting all properties.
 function edit12_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to rain (see GCBO)
+% hObject    handle to updateRain (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -741,18 +741,18 @@ end
 
 
 
-function aqi_Callback(hObject, eventdata, handles)
-% hObject    handle to aqi (see GCBO)
+function updateAqi_Callback(hObject, eventdata, handles)
+% hObject    handle to updateAqi (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of aqi as text
-%        str2double(get(hObject,'String')) returns contents of aqi as a double
+% Hints: get(hObject,'String') returns contents of updateAqi as text
+%        str2double(get(hObject,'String')) returns contents of updateAqi as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function aqi_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to aqi (see GCBO)
+function updateAqi_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to updateAqi (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -765,42 +765,49 @@ end
 
 % --- Executes on button press in pushbutton6.
 function pushbutton6_Callback(hObject, eventdata, handles)
-
-dateData = load('date.txt');
+dataPath;
+dateData = getDateData();
 date = str2double(get(handles.date, 'String'));
 month = get(handles.popupmenu8,'value');
 
 yearChosen = get(handles.popupmenu9, 'value');
 
-year = yearChosen + 2016;
+year = yearChosen + 2015;
 dateInput = [date; month; year];
-[m, n] = size(dateData);
-answer = '';
+invalidateDate = false;
+if (~isdatetime(datetime(year, month, date)) || datetime(year, month, date) > datetime('now'))
+    invalidateDate = true;
+end
+[~, n] = size(dateData);
+update = false;
+isDuplicated = false;
 for index = 1 : n
     if isequal(dateInput, dateData(:,index))
-        answer = questdlg('Duplicate data', ...
-            'Do you want to override?', ...
-            'Yes','No thank you', 'No thank you');
+        isDuplicated = true;
         break;
     end
 end
-update = 1;
-switch answer
-    case 'Yes'
-        update = 1;
-        disp([answer ' coming right up.'])
-    case 'No thank you'
-        disp([answer ' coming right up.'])
-        update = 0;
-end
+aqiInput = get(handles.updateAqi, 'String');
+tempInput = get(handles.updateTemp, 'String');
+rainInput = get(handles.updateRain, 'String');
 
-if (update == 1)
-    aqiData = load('aqi03-072017.txt');
-    tempData = load('temp03-052017.txt');
-    rainData = load('rain03-052017.txt');
-    aqiInput = get(handles.aqi, 'String');
-    tempInput = get(handles.temp, 'String');
-    rainInput = get(handles.rain, 'String');
+invalidateData = false;
+if (isempty(aqiInput) || isempty(tempInput) || isempty(rainInput))
+    invalidateData = true;
+end
+aqiInput = str2double(aqiInput);
+tempInput = str2double(tempInput);
+rainInput = str2double(rainInput);
+if (invalidateDate)
+    msgbox('Time is incorrect');
+elseif (isDuplicated)
+    msgbox('Data duplicated');
+elseif (invalidateData)
+    msgbox('Invalidated data');
+else
+    aqiData = getAqi();
+    tempData = getTemperature();
+    rainData = getRain();
     aqiLength = length(aqiData);
     tempLength = length(tempData);
     rainLength = length(rainData);
@@ -809,15 +816,24 @@ if (update == 1)
     aqiData = aqiData(1 : minimum);
     tempData = tempData(1 : minimum);
     rainData = rainData(1 : minimum);
-    aqiInterpolation = griddata(tempData, rainData, aqiData, str2double(tempInput), str2double(rainInput));
-    disp(aqiInterpolation);
-    disp('AAA');
-    disp(str2double(aqiInput) - aqiInterpolation);
-    if (abs(str2double(aqiInput) - aqiInterpolation) > 25)
+    aqiInterpolation = griddata(tempData, rainData, aqiData, tempInput, rainInput);
+    disp(aqiInput);
+    disp(aqiInput - aqiInterpolation);
+    if (abs(aqiInput - aqiInterpolation) > 25)
         answer = questdlg('Inputs are difference too much from interpolation result', ...
             'Do you want to continue update?', ...
             'Yes','No thank you', 'No thank you');
+        if (answer == 'Yes') 
+            update = true;
+        end
+    else 
+        update = true;
     end
+end
+
+if update
+    insertData(dateInput, tempInput, rainInput, aqiInput);
+    msgbox('Update Successful');
 end
 
 

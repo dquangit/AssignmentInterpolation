@@ -22,7 +22,7 @@ function varargout = updateData(varargin)
 
 % Edit the above text to modify the response to help updateData
 
-% Last Modified by GUIDE v2.5 29-Apr-2018 07:49:52
+% Last Modified by GUIDE v2.5 06-May-2018 00:10:06
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -190,40 +190,47 @@ end
 
 % --- Executes on button press in update.
 function update_Callback(hObject, eventdata, handles)
-dateData = load('date.txt');
-date = str2double(get(handles.date, 'String'));
+dateData = getDateData();
+date = get(handles.date, 'value');
 month = get(handles.month,'value');
-disp(month);
+disp(date);
 yearChosen = get(handles.year, 'value');
-year = yearChosen + 2016;
+year = yearChosen + 2015;
 dateInput = [date; month; year];
-[m, n] = size(dateData);
-answer = '';
+invalidateDate = false;
+if (datetime(year, month, date) > datetime('now'))
+    invalidateDate = true;
+end
+[~, n] = size(dateData);
+update = false;
+isDuplicated = false;
 for index = 1 : n
     if isequal(dateInput, dateData(:,index))
-        answer = questdlg('Duplicate data', ...
-            'Do you want to override?', ...
-            'Yes','No thank you', 'No thank you');
+        isDuplicated = true;
         break;
     end
 end
-update = 1;
-switch answer
-    case 'Yes'
-        update = 1;
-        disp([answer ' coming right up.'])
-    case 'No thank you'
-        disp([answer ' coming right up.'])
-        update = 0;
-end
+aqiInput = get(handles.aqi, 'String');
+tempInput = get(handles.temp, 'String');
+rainInput = get(handles.rain, 'String');
 
-if (update == 1)
-    aqiData = load('aqi03-072017.txt');
-    tempData = load('temp03-052017.txt');
-    rainData = load('rain03-052017.txt');
-    aqiInput = get(handles.aqi, 'String');
-    tempInput = get(handles.temp, 'String');
-    rainInput = get(handles.rain, 'String');
+aqiInput = str2double(aqiInput);
+tempInput = str2double(tempInput);
+rainInput = str2double(rainInput);
+invalidateData = false;
+if (isempty(aqiInput) || isempty(tempInput) || isempty(rainInput))
+    invalidateData = true;
+end
+if (invalidateDate)
+    msgbox('Time is incorrect');
+elseif (isDuplicated)
+    msgbox('Data duplicated');
+elseif (invalidateData)
+    msgbox('Invalidated data');
+else
+    aqiData = getAqi();
+    tempData = getTemperature();
+    rainData = getRain();
     aqiLength = length(aqiData);
     tempLength = length(tempData);
     rainLength = length(rainData);
@@ -232,14 +239,23 @@ if (update == 1)
     aqiData = aqiData(1 : minimum);
     tempData = tempData(1 : minimum);
     rainData = rainData(1 : minimum);
-    aqiInterpolation = griddata(tempData, rainData, aqiData, str2double(tempInput), str2double(rainInput));
+    aqiInterpolation = griddata(tempData, rainData, aqiData, tempInput, rainInput);
     disp(aqiInterpolation);
-    disp(str2double(aqiInput) - aqiInterpolation);
-    if (abs(str2double(aqiInput) - aqiInterpolation) > 25)
+    disp(aqiInput - aqiInterpolation);
+    if (abs(aqiInput - aqiInterpolation) > 25)
         answer = questdlg('Inputs are difference too much from interpolation result', ...
             'Do you want to continue update?', ...
             'Yes','No thank you', 'No thank you');
+        if (answer == 'Yes') 
+            update = true;
+        end
+    else 
+        update = true;
     end
+end
+
+if update
+    insertData(dateInput, tempInput, rainInput, aqiInput);
 end
 
 function aqi_Callback(hObject, eventdata, handles)
@@ -258,6 +274,29 @@ function aqi_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 
 % Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in date.
+function popupmenu3_Callback(hObject, eventdata, handles)
+% hObject    handle to date (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns date contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from date
+
+
+% --- Executes during object creation, after setting all properties.
+function popupmenu3_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to date (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
