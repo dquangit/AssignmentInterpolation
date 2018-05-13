@@ -97,6 +97,7 @@ set(handles.uipanel1,'visible','off')
 set(handles.uipanel2,'visible','on')
 set(handles.uipanel7,'visible','off')
 set(handles.uipanel9,'visible','off')
+monthfilter_Callback(hObject, eventdata, handles)
 
 
 
@@ -479,16 +480,16 @@ tempData = load('temp03-052017.txt');
              grid on;
              hold on;
              plot(aqiData);
+             hold off;
         elseif (~isempty(temp))
             [tempData, aqiData] = removeDuplicatedData(tempData, aqiData);
             [output,x] = Lagrange(tempData, aqiData, str2double(temp));
-             axes(handles.axes4);
 %            x = [aqiData];
              plot(x);
              grid on;
              hold on;
              plot(aqiData);
-            
+            hold off;
         end
     else
         output = griddata(tempData, rainData, aqiData, str2double(temp), str2double(ra));
