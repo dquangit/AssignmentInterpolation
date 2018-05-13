@@ -462,33 +462,23 @@ tempData = load('temp03-052017.txt');
     tempLength = length(tempData);
     rainLength = length(rainData);
     minimum = min([aqiLength tempLength rainLength]);
-    %disp([aqiLength tempLength rainLength]);
+    disp([aqiLength tempLength rainLength]);
     aqiData = aqiData(1 : minimum);
     tempData = tempData(1 : minimum);
     rainData = rainData(1 : minimum);
-    
+    disp('asdasd');
     if (isempty(ra) || (isempty(temp)))
         if (isempty(ra) && isempty(temp))
             msgbox('Invalidate input');
         elseif (~isempty(ra))
+            disp('rain');
             [rainData, aqiData] = removeDuplicatedData(rainData, aqiData);
-            [output,x] = Lagrange(rainData, aqiData, str2double(ra));
-             axes(handles.axes4);
-             disp(output);
-             plot(x);
-             grid on;
-             hold on;
-             plot(aqiData);
+            output = Lagrange(rainData, aqiData, str2double(ra));
         elseif (~isempty(temp))
+            disp('temp');
             [tempData, aqiData] = removeDuplicatedData(tempData, aqiData);
-            [output,x] = Lagrange(tempData, aqiData, str2double(temp));
-             axes(handles.axes4);
-%            x = [aqiData];
-             plot(x);
-             grid on;
-             hold on;
-             plot(aqiData);
-            
+            output = Lagrange(tempData, aqiData, str2double(temp));
+            disp('ASdasd');
         end
     else
         output = griddata(tempData, rainData, aqiData, str2double(temp), str2double(ra));

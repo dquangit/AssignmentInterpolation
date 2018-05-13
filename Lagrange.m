@@ -1,17 +1,14 @@
-function [output,x] = Lagrange(X, Y, P)
+function output = Lagrange(X, Y, P)
     n = length(Y) - 1 ;
     S= 0;
-    x = [];
     for i=1:n+1
         L=1;
         for j=1:n+1
             if j~=i
                L = L*(P-X(j)) / (X(i)-X(j));
             end
-        end
-        
+        end     
         S=S+Y(i)*L;
-        x = [x,S];
     end
     output = S;
 end
