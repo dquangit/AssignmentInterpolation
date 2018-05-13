@@ -1,7 +1,7 @@
 function insertData(date, temp, rain, aqi)
     dataPath;
     dateData = getDateData();
-   
+    
     n = length(dateData);
     dateInput = datetime(date(3), date(2), date(1));
     
