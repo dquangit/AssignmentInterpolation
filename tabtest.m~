@@ -785,7 +785,7 @@ yearChosen = get(handles.popupmenu9, 'value');
 year = yearChosen + 2015;
 dateInput = [date; month; year];
 invalidateDate = false;
-if (~isdatetime(datetime(year, month, date)) || datetime(year, month, date) > datetime('now'))
+if (isdatetime(datetime(year, month, date)) || datetime(year, mont) > datetime('now'))
     invalidateDate = true;
 end
 [~, n] = size(dateData);

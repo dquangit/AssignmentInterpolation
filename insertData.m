@@ -28,7 +28,9 @@ end
 function insertFirst(date, temp, rain, aqi)    
     [dateData, rainData, tempData, aqiData] = loadData();
     dateData = [reshape(date, [3, 1]) dateData];
-    rainData = [rain rainData];
+    disp(rain);
+    disp(size(rainData));
+    rainData = [rain, rainData];
     tempData = [temp tempData];
     aqiData = [aqi aqiData];
     save(dateData, rainData, tempData, aqiData);
