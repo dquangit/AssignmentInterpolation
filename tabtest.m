@@ -22,7 +22,7 @@ function varargout = tabtest(varargin)
 
 % Edit the above text to modify the response to help tabtest
 
-% Last Modified by GUIDE v2.5 13-May-2018 07:59:43
+% Last Modified by GUIDE v2.5 13-May-2018 09:21:11
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -448,12 +448,12 @@ function pushbutton4_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 
-temp = get(handles.edit7,'String');
-ra = get(handles.updateRain,'String'); 
+temp = get(handles.forecastTemp,'String');
+ra = get(handles.forecastRain,'String'); 
 
 
-aqiData = load('aqi03-072017.txt');
-tempData = load('temp03-052017.txt');
+    aqiData = load('aqi03-072017.txt');
+    tempData = load('temp03-052017.txt');
 
     rainData = load('rain03-052017.txt');
     disp(length(rainData));
@@ -474,22 +474,9 @@ tempData = load('temp03-052017.txt');
         elseif (~isempty(ra))
             [rainData, aqiData] = removeDuplicatedData(rainData, aqiData);
             [output,x] = Lagrange(rainData, aqiData, str2double(ra));
-             axes(handles.axes4);
-             disp(output);
-             plot(x);
-             grid on;
-             hold on;
-             plot(aqiData);
-             hold off;
         elseif (~isempty(temp))
             [tempData, aqiData] = removeDuplicatedData(tempData, aqiData);
             [output,x] = Lagrange(tempData, aqiData, str2double(temp));
-%            x = [aqiData];
-             plot(x);
-             grid on;
-             hold on;
-             plot(aqiData);
-            hold off;
         end
     else
         output = griddata(tempData, rainData, aqiData, str2double(temp), str2double(ra));
@@ -614,18 +601,18 @@ end
 
 
 
-function edit7_Callback(hObject, eventdata, handles)
-% hObject    handle to edit7 (see GCBO)
+function forecastTemp_Callback(hObject, eventdata, handles)
+% hObject    handle to forecastTemp (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit7 as text
-%        str2double(get(hObject,'String')) returns contents of edit7 as a double
+% Hints: get(hObject,'String') returns contents of forecastTemp as text
+%        str2double(get(hObject,'String')) returns contents of forecastTemp as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit7_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit7 (see GCBO)
+function forecastTemp_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to forecastTemp (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -911,6 +898,29 @@ function popupmenu9_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 
 % Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function forecastRain_Callback(hObject, eventdata, handles)
+% hObject    handle to forecastRain (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of forecastRain as text
+%        str2double(get(hObject,'String')) returns contents of forecastRain as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function forecastRain_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to forecastRain (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
