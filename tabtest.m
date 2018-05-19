@@ -22,7 +22,7 @@ function varargout = tabtest(varargin)
 
 % Edit the above text to modify the response to help tabtest
 
-% Last Modified by GUIDE v2.5 13-May-2018 09:21:11
+% Last Modified by GUIDE v2.5 17-May-2018 20:53:58
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -58,7 +58,8 @@ handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
-
+global firstTimeClick;
+firstTimeClick = true;
 set(handles.uipanel9,'visible','off')
 
 
@@ -82,10 +83,11 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-set(handles.uipanel1,'visible','on')
-set(handles.uipanel2,'visible','off')
-set(handles.uipanel7,'visible','off')
-set(handles.uipanel9,'visible','on')
+set(handles.uipanel1,'visible','on');
+set(handles.uipanel2,'visible','off');
+set(handles.uipanel7,'visible','off');
+set(handles.uipanel9,'visible','on');
+set(handles.uipanel15,'visible','off');
 
 
 % --- Executes on button press in pushbutton2.
@@ -93,10 +95,13 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-set(handles.uipanel1,'visible','off')
-set(handles.uipanel2,'visible','on')
-set(handles.uipanel7,'visible','off')
-set(handles.uipanel9,'visible','off')
+set(handles.uipanel15,'visible','off');
+
+set(handles.uipanel1,'visible','off');
+set(handles.uipanel2,'visible','on');
+set(handles.uipanel7,'visible','off');
+set(handles.uipanel9,'visible','off');
+
 monthfilter_Callback(hObject, eventdata, handles)
 
 
@@ -473,10 +478,11 @@ ra = get(handles.forecastRain,'String');
             msgbox('Invalidate input');
         elseif (~isempty(ra))
             [rainData, aqiData] = removeDuplicatedData(rainData, aqiData);
-            [output,x] = Lagrange(rainData, aqiData, str2double(ra));
+            disp(rainData);
+            output = Lagrange(rainData, aqiData, str2double(ra));
         elseif (~isempty(temp))
             [tempData, aqiData] = removeDuplicatedData(tempData, aqiData);
-            [output,x] = Lagrange(tempData, aqiData, str2double(temp));
+            output = Lagrange(tempData, aqiData, str2double(temp));
         end
     else
         output = griddata(tempData, rainData, aqiData, str2double(temp), str2double(ra));
@@ -507,13 +513,73 @@ ra = get(handles.forecastRain,'String');
 
 % --- Executes on button press in pushbutton5.
 function pushbutton5_Callback(hObject, eventdata, handles)
+global firstTimeClick;
 % hObject    handle to pushbutton5 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.uipanel7,'visible','on');
 set(handles.uipanel9,'visible','off');
-set(handles.uipanel1,'visible','off')
-set(handles.uipanel2,'visible','off')
+set(handles.uipanel1,'visible','off');
+set(handles.uipanel2,'visible','off');
+set(handles.uipanel15,'visible','on');
+
+date = load('data/realdata/date.txt');
+aqi = load('data/realdata/aqi03-072017.txt');
+r = load('data/realdata/rain03-052017.txt');
+disp(length(aqi));
+disp(length(r));
+disp(length(date));
+
+dateInput = date(:,end-7+1:end);
+% disp(dateInput);
+AqiInput = aqi(:,end-7+1:end);
+% disp(AqiInput);
+RainInput = r(:,end-7+1:end);
+% disp(RainInput);
+
+aqidata = [AqiInput];
+[RainInput, AqiInput] = removeDuplicatedData(RainInput, AqiInput);
+output = Lagrange(RainInput,AqiInput,0);
+disp(output);
+aqiforecast = load('aqiforecast.txt');
+if firstTimeClick
+    fid =fopen('aqiforecast.txt','a');
+    fwrite(fid,' '+string(output));
+    fclose(fid);
+    firstTimeClick = false;
+end
+axes(handles.axes6);
+disp(dateInput(1,:));
+plot(aqidata,'b');
+grid on;
+hold on;
+plot(aqiforecast,'r');
+hold off;
+
+
+% dateInput = [10;5;2018];
+% n = length(date);
+% 
+% d = 0;
+% for i =1:n
+%     if isequal(aaa,date(:,i))
+% %         d=d+i;
+%         disp(i);
+%     end
+%     
+% end
+% disp(d);
+% originalAqi = [];
+% originalrain= [];
+% for j=d:n
+%     for k=d:n
+%         if j == k    
+%             originalAqi = [originalAqi,aqi(k)];
+%             originalrain = [originalrain,r(k)];
+%         end
+%     end
+% end
+% %disp(originalrain(end));
 
 
 
@@ -925,3 +991,19 @@ function forecastRain_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in pushbutton7.
+function pushbutton7_Callback(hObject, eventdata, handles)
+set(handles.uipanel1,'visible','off')
+set(handles.uipanel2,'visible','off')
+set(handles.uipanel7,'visible','off')
+set(handles.uipanel9,'visible','off')
+%set(handles.uipanel13,'visible','on')
+
+
+% --- Executes on button press in pushbutton8.
+function pushbutton8_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton8 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
