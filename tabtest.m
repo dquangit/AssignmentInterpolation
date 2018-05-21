@@ -239,120 +239,131 @@ function monthfilter_Callback(hObject, eventdata, handles)
 %        contents{get(hObject,'Value')} returns selected item from monthfilter
 
 
-loadfileAqi = load('aqi03-072017.txt');
+loadfileAqi = load('data/realdata/aqi03-072017.txt');
 n = length(loadfileAqi);
-%disp(n);
-choose = get(handles.monthfilter,'value');
 
-loadfilemonth = load('date.txt');
+value = get(handles.monthfilter,'value');
+choose = get(handles.monthfilter,'string');
+
+splitMonth = split(choose(value),"/");
+
+loadfilemonth = load('data/realdata/date.txt');
 [r,c] = size(loadfilemonth);
-
-% for i =1 :c
-%     if loadfilemonth(2,i) == 4
-%         disp(loadfileAqi(i));
-%     end
-% end
-x =[];
-switch choose
-    case 1
-        %for i=1:n
-         %   if i<19
-                %axes(handles.axes1);
-                %bar(loadfileAqi(:,1:18));
-                %x = [1,10,loadfileAqi(:,1:19)];
-                %disp(loadfileAqi(:,1:18));
-                %bar(loadfileAqi(:,1:18));
-                %set(gca,'XTickLabel',{'6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24'});
-                %set(gca,'XTickLabel',x);
-                %xlabel('ngay');
-                %bar(3,24,[loadfileAqi(i)]);
-          %  end
-        %end
-        
-        for i =1 :c
-            if loadfilemonth(2,i) == 3
-                %axes(handles.axes1);
-                %x = [x;loadfileAqi(i)];
-                x = [x,loadfileAqi(i)];
-                
-                %disp(loadfileAqi(i));
-                
-            end
-        end
-        bar(x);
-    case 2
-        for i =1 :c
-            if loadfilemonth(2,i) == 4
-                axes(handles.axes1);
-                x = [x,loadfileAqi(i)];
-                %disp(loadfileAqi(i));
-            end
-        end
-        bar(x);
-    case 3
-        for i =1 :c
-            if loadfilemonth(2,i) == 5
-                axes(handles.axes1);
-                x = [x,loadfileAqi(i)];
-                %disp(loadfileAqi(i));
-            end
-        end
-        bar(x);
-    case 4
-        for i =1 :c
-            if loadfilemonth(2,i) == 6
-                axes(handles.axes1);
-                x = [x,loadfileAqi(i)];
-                %disp(loadfileAqi(i));
-            end
-        end
-        bar(x);
-    case 5
-        for i =1 :c
-            if loadfilemonth(2,i) == 7
-                axes(handles.axes1);
-                x = [x,loadfileAqi(i)];
-                %disp(loadfileAqi(i));
-            end
-        end
-        bar(x);
-    case 6
-        for i =1 :c
-            if loadfilemonth(2,i) == 8
-                axes(handles.axes1);
-                x = [x,loadfileAqi(i)];
-                %disp(loadfileAqi(i));
-            end
-        end
-        bar(x);
-    case 7
-        for i =1 :c
-            if loadfilemonth(2,i) == 9
-                axes(handles.axes1);
-                x = [x,loadfileAqi(i)];
-                %disp(loadfileAqi(i));
-            end
-        end
-        bar(x);
-    case 8
-       for i =1 :c
-            if loadfilemonth(2,i) == 10
-                axes(handles.axes1);
-               x = [x,loadfileAqi(i)];
-                %disp(loadfileAqi(i));
-            end
-       end
-        bar(x);
-    case 9
-        for i =1 :c
-            if loadfilemonth(2,i) == 11
-                axes(handles.axes1);
-                x = [x,loadfileAqi(i)];
-                %disp(loadfileAqi(i));
-            end
-        end
-        bar(x);
+[~, n1] = size(loadfilemonth);
+datetime = [str2double(splitMonth(1));str2double(splitMonth(2))];
+disp(datetime);
+x = [];
+for i=1:n1
+    if isequal(datetime,loadfilemonth(2:3,i))
+        disp(loadfileAqi(i));
+        x = [x,loadfileAqi(i)];
+    end
 end
+axes(handles.axes1);
+bar(x);
+
+
+% x =[];
+% switch choose
+%     case 1
+%         %for i=1:n
+%          %   if i<19
+%                 %axes(handles.axes1);
+%                 %bar(loadfileAqi(:,1:18));
+%                 %x = [1,10,loadfileAqi(:,1:19)];
+%                 %disp(loadfileAqi(:,1:18));
+%                 %bar(loadfileAqi(:,1:18));
+%                 %set(gca,'XTickLabel',{'6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24'});
+%                 %set(gca,'XTickLabel',x);
+%                 %xlabel('ngay');
+%                 %bar(3,24,[loadfileAqi(i)]);
+%           %  end
+%         %end
+%         
+%         for i =1 :c
+%             if loadfilemonth(2,i) == 3
+%                 %axes(handles.axes1);
+%                 %x = [x;loadfileAqi(i)];
+%                 x = [x,loadfileAqi(i)];
+%                 
+%                 %disp(loadfileAqi(i));
+%                 
+%             end
+%         end
+%         bar(x);
+%     case 2
+%         for i =1 :c
+%             if loadfilemonth(2,i) == 4
+%                 axes(handles.axes1);
+%                 x = [x,loadfileAqi(i)];
+%                 %disp(loadfileAqi(i));
+%             end
+%         end
+%         bar(x);
+%     case 3
+%         for i =1 :c
+%             if loadfilemonth(2,i) == 5
+%                 axes(handles.axes1);
+%                 x = [x,loadfileAqi(i)];
+%                 %disp(loadfileAqi(i));
+%             end
+%         end
+%         bar(x);
+%     case 4
+%         for i =1 :c
+%             if loadfilemonth(2,i) == 6
+%                 axes(handles.axes1);
+%                 x = [x,loadfileAqi(i)];
+%                 %disp(loadfileAqi(i));
+%             end
+%         end
+%         bar(x);
+%     case 5
+%         for i =1 :c
+%             if loadfilemonth(2,i) == 7
+%                 axes(handles.axes1);
+%                 x = [x,loadfileAqi(i)];
+%                 %disp(loadfileAqi(i));
+%             end
+%         end
+%         bar(x);
+%     case 6
+%         for i =1 :c
+%             if loadfilemonth(2,i) == 8
+%                 axes(handles.axes1);
+%                 x = [x,loadfileAqi(i)];
+%                 %disp(loadfileAqi(i));
+%             end
+%         end
+%         bar(x);
+%     case 7
+%         for i =1 :c
+%             if loadfilemonth(2,i) == 9
+%                 axes(handles.axes1);
+%                 x = [x,loadfileAqi(i)];
+%                 %disp(loadfileAqi(i));
+%             end
+%         end
+%         bar(x);
+%     case 8
+%        for i =1 :c
+%             if loadfilemonth(2,i) == 10
+%                 axes(handles.axes1);
+%                x = [x,loadfileAqi(i)];
+%                 %disp(loadfileAqi(i));
+%             end
+%        end
+%         bar(x);
+%     case 9
+%         for i =1 :c
+%             if loadfilemonth(2,i) == 11
+%                 axes(handles.axes1);
+%                 x = [x,loadfileAqi(i)];
+%                 %disp(loadfileAqi(i));
+%             end
+%         end
+%         bar(x);
+% end
 
 
 
