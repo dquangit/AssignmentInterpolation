@@ -209,8 +209,9 @@ rain = 0;
 temp = 0;
 if (d > 0 && d <= n) 
     aqi = aqiData(d);
-    rain = rainData(d);
-    temp = tempData(d);
+
+    rain = rain(d);
+    temp = temp(d);
 end
 
 if (d == 0)
@@ -239,15 +240,7 @@ if (d == 0)
         end
         aqi = interpolationAqi;
         if (aqi == 0)
-            aqiLength = length(aqiData);
-            tempLength = length(tempData);
-            rainLength = length(rainData);
-            minimum = min([aqiLength tempLength rainLength]);
-            disp([aqiLength tempLength rainLength]);
-            aqiData = aqiData(1 : minimum);
-            tempData = tempData(1 : minimum);
-            rainData = rainData(1 : minimum);
-            aqi = griddata(tempData, rainData, aqiData, temp, rain);
+            aqi = griddata()
         end
     end    
 end
@@ -927,7 +920,9 @@ elseif (isDuplicated)
 elseif (invalidateData)
     msgbox('Invalidated data');
 else
-    [~, tempData, rainData, aqiData] = loadRealData();
+    aqiData = getAqi();
+    tempData = getTemperature();
+    rainData = getRain();
     aqiLength = length(aqiData);
     tempLength = length(tempData);
     rainLength = length(rainData);
