@@ -185,9 +185,8 @@ month = get(handles.searchMonth,'value');
 [dateData, tempData, rainData, aqiData] = loadRealData();
 disp(date);
 disp(month);
-loadfiledate = getDateData();
-disp(length(loadfiledate));
-[~, dateDataLength] = size(loadfiledate);
+disp(length(dateData));
+[~, dateDataLength] = size(dateData);
 yearString = get(handles.year, 'string');
 yearChosen = get(handles.year, 'value');
 year = yearString(yearChosen);
@@ -197,7 +196,7 @@ d = 0;
 chosenDate = datetime(year, month, date);
 disp(chosenDate);
 for j = 1:dateDataLength
-    comparedDate = datetime(loadfiledate(3, j), loadfiledate(2, j), loadfiledate(1, j));
+    comparedDate = datetime(dateData(3, j), dateData(2, j), dateData(1, j));
     if comparedDate == chosenDate
        d = j;
        break;
@@ -218,6 +217,8 @@ if (d == 0)
     forecastDataLength = length(forecastDate);
     for index = 1 : forecastDataLength
         comparedDate = datetime(forecastDate(3, index), forecastDate(2, index), forecastDate(1, index));
+        disp(comparedDate);
+        disp(chosenDate);
         if comparedDate == chosenDate
            rain = forecastRain(index);
            temp = forecastTemp(index);
@@ -229,7 +230,7 @@ if (d == 0)
     if d ~= 0
         [dateInterpolation, aqiInterpolation] = loadInterpolationData();
         interpolationAqi = 0;
-        interpolationDataLength = length(dateInterpolation);
+        [~, interpolationDataLength] = size(dateInterpolation);
         for index = 1 : interpolationDataLength
             comparedDate = datetime(dateInterpolation(3, index), dateInterpolation(2, index), dateInterpolation(1, index));
             if comparedDate == chosenDate
@@ -243,11 +244,12 @@ if (d == 0)
             tempLength = length(tempData);
             rainLength = length(rainData);
             minimum = min([aqiLength tempLength rainLength]);
-            disp([aqiLength tempLength rainLength]);
             aqiData = aqiData(1 : minimum);
             tempData = tempData(1 : minimum);
             rainData = rainData(1 : minimum);
             aqi = griddata(tempData, rainData, aqiData, temp, rain);
+            dateInput = [date; month; year];
+            insertInterpolationData(dateInput, aqi);
         end
     end    
 end
