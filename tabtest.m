@@ -22,7 +22,7 @@ function varargout = tabtest(varargin)
 
 % Edit the above text to modify the response to help tabtest
 
-% Last Modified by GUIDE v2.5 17-May-2018 20:53:58
+% Last Modified by GUIDE v2.5 20-May-2018 06:58:20
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -60,6 +60,7 @@ handles.output = hObject;
 guidata(hObject, handles);
 global firstTimeClick;
 firstTimeClick = true;
+dataPath;
 set(handles.uipanel9,'visible','off')
 
 
@@ -106,18 +107,18 @@ monthfilter_Callback(hObject, eventdata, handles)
 
 
 
-function day_Callback(hObject, eventdata, handles)
-% hObject    handle to day (see GCBO)
+function searchDay_Callback(hObject, eventdata, handles)
+% hObject    handle to searchDay (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of day as text
-%        str2double(get(hObject,'String')) returns contents of day as a double
+% Hints: get(hObject,'String') returns contents of searchDay as text
+%        str2double(get(hObject,'String')) returns contents of searchDay as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function day_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to day (see GCBO)
+function searchDay_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to searchDay (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -128,19 +129,19 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on selection change in month.
-function month_Callback(hObject, eventdata, handles)
-% hObject    handle to month (see GCBO)
+% --- Executes on selection change in searchMonth.
+function searchMonth_Callback(hObject, eventdata, handles)
+% hObject    handle to searchMonth (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: contents = cellstr(get(hObject,'String')) returns month contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from month
+% Hints: contents = cellstr(get(hObject,'String')) returns searchMonth contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from searchMonth
 
 
 % --- Executes during object creation, after setting all properties.
-function month_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to month (see GCBO)
+function searchMonth_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to searchMonth (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -174,58 +175,73 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in search.
-function search_Callback(hObject, eventdata, handles)
-% hObject    handle to search (see GCBO)
+% --- Executes on button press in searchButton.
+function searchButton_Callback(hObject, eventdata, handles)
+% hObject    handle to searchButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-date = get(handles.day,'string');
-month = get(handles.month,'value');
+date = get(handles.searchDay,'string');
+month = get(handles.searchMonth,'value');
 disp(date);
 disp(month);
-loadfiledate = load('date.txt');
+loadfiledate = getDateData();
 disp(length(loadfiledate));
-[r,c] = size(loadfiledate);
+[~, dateDataLength] = size(loadfiledate);
+yearString = get(handles.year, 'string');
+yearChosen = get(handles.year, 'value');
+year = yearString(yearChosen);
+year = str2double(year);
+date = str2double(date);
 d = 0;
-for j = 1:c
-    if loadfiledate(1,j) == str2num(date) && loadfiledate(2,j)== month && loadfiledate(3,j) == 2017
-       d =d + j;
-    end
-end
-disp(d);
-if d == 0
-    msgbox('Du lieu chua duoc cap nhap');
-end
-loadfileAQI = load('aqi03-072017.txt');
-n = length(loadfileAQI);
-aqi = 0;
-for i = 1:n
-    if i==d
-        aqi = aqi+loadfileAQI(i);
+chosenDate = datetime(year, month, date);
+disp(chosenDate);
+for j = 1:dateDataLength
+    comparedDate = datetime(loadfiledate(3, j), loadfiledate(2, j), loadfiledate(1, j));
+    if comparedDate == chosenDate
+       d = j;
+       break;
     end
 end
 
+loadfileAQI = getAqi();
+n = length(loadfileAQI);
+aqi = 0;
+if (d > 0 && d <= n) 
+    aqi = loadfileAQI(d);
+    rain = getRain();
+    temp = getTemperature();
+    rain = rain(d);
+    temp = temp(d);
+    set(handles.searchRain,'string', rain);
+    set(handles.searchTemp,'string', temp);
+else
+    msgbox('Du lieu chua duoc cap nhap');
+end
+
 if aqi ~= 0
-    set(handles.text6,'string',aqi);
+    set(handles.searchAqi,'string',aqi);
     if aqi <= 50
-        set(handles.text8,'String','Good');
+        set(handles.searchAqiLevel,'String','Good');
         set(handles.text10,'String','Air quality is considered satisfactory, and air pollution poses little or no risk');
     elseif aqi <= 100
-        set(handles.text8,'String','Moderate');
+        set(handles.searchAqiLevel,'String','Moderate');
         set(handles.text10,'String','Air quality is acceptable; however, for some pollutants there may be a moderate health concern for a very small number of people who are unusually sensitive to air pollution.');
     elseif aqi <= 150
-        set(handles.text8,'String','Unhealthy for Sensitive Groups');
+        set(handles.searchAqiLevel,'String','Unhealthy for Sensitive Groups');
         set(handles.text10,'String','Members of sensitive groups may experience health effects. The general public is not likely to be affected.');
     elseif aqi <= 200
-        set(handles.text8,'String','Unhealthy');
+        set(handles.searchAqiLevel,'String','Unhealthy');
         set(handles.text10,'String', 'Everyone may begin to experience health effects; members of sensitive groups may experience more serious health effects');
     elseif aqi <= 300
-        set(handles.text8,'String','Very Unhealthy');
+        set(handles.searchAqiLevel,'String','Very Unhealthy');
         set(handles.text10, 'String', 'Health warnings of emergency conditions. The entire population is more likely to be affected.');
     else
-        set(handles.text8,'String','Good');
+        set(handles.searchAqiLevel,'String','Good');
         set(handles.text10, 'String', 'Health alert: everyone may experience more serious health effects.');
     end
+end
+
+if (d == 0)
 end
 
 
@@ -239,7 +255,7 @@ function monthfilter_Callback(hObject, eventdata, handles)
 %        contents{get(hObject,'Value')} returns selected item from monthfilter
 
 
-loadfileAqi = load('aqi03-072017.txt');
+loadfileAqi = getAqi();
 n = length(loadfileAqi);
 %disp(n);
 choose = get(handles.monthfilter,'value');
@@ -457,10 +473,10 @@ temp = get(handles.forecastTemp,'String');
 ra = get(handles.forecastRain,'String'); 
 
 
-    aqiData = load('aqi03-072017.txt');
-    tempData = load('temp03-052017.txt');
+    aqiData = getAqi();
+    tempData = getTemperature();
 
-    rainData = load('rain03-052017.txt');
+    rainData = getRain();
     disp(length(rainData));
     disp(length(aqiData));
     disp(length(tempData));

@@ -1,0 +1,12 @@
+function [date, temp, rain, aqi] = loadRealData(inputArg1,inputArg2)
+    dataPath;
+    global datePath;
+    global tempPath;
+    global rainPath;
+    global aqiPath;
+    date = load(datePath);
+    temp = load(tempPath);
+    rain = load(rainPath);
+    aqi = load(aqiPath);
+end
+
