@@ -1,25 +1,25 @@
 function insertInterpolationData(date, aqi)
-    dataPath;
-    [dateData, ~] = loadInterpolationData();
-    
-    n = length(dateData);
-    if (n == 0)
-        insertFirst(date, aqi);
-        return;
-    end
-    dateInput = datetime(date(3), date(2), date(1));
-    
-    if (dateInput < dateFromDateData(dateData(:, 1)))
-        insertFirst(date, aqi);
-    elseif (dateInput > dateFromDateData(dateData(:, n)))
-        insertLast(date, aqi);
-    else
-        for index = 1 : n - 1
-            dateBefore = dateFromDateData(dateData(:,index));
-            dateAfter = dateFromDateData(dateData(:, index + 1));
-            if ((dateInput < dateAfter) && (dateInput > dateBefore))
-                insertAtIndex(date, aqi, index);
-                break;
+    if (~isnan(aqi)) 
+        [dateData, ~] = loadInterpolationData();
+        [~, n] = size(dateData);
+        if (n == 0)
+            insertFirst(date, aqi);
+            return;
+        end
+        dateInput = datetime(date(3), date(2), date(1));
+
+        if (dateInput < dateFromDateData(dateData(:, 1)))
+            insertFirst(date, aqi);
+        elseif (dateInput > dateFromDateData(dateData(:, n)))
+            insertLast(date, aqi);
+        else
+            for index = 1 : n - 1
+                dateBefore = dateFromDateData(dateData(:,index));
+                dateAfter = dateFromDateData(dateData(:, index + 1));
+                if ((dateInput < dateAfter) && (dateInput > dateBefore))
+                    insertAtIndex(date, aqi, index);
+                    break;
+                end
             end
         end
     end

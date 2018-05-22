@@ -88,7 +88,6 @@ set(handles.uipanel1,'visible','on');
 set(handles.uipanel2,'visible','off');
 set(handles.uipanel7,'visible','off');
 set(handles.uipanel9,'visible','on');
-set(handles.uipanel15,'visible','off');
 
 
 % --- Executes on button press in pushbutton2.
@@ -96,8 +95,6 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-set(handles.uipanel15,'visible','off');
-
 set(handles.uipanel1,'visible','off');
 set(handles.uipanel2,'visible','on');
 set(handles.uipanel7,'visible','off');
@@ -317,6 +314,8 @@ if aqi ~= 0
             end
         end
     end
+    disp(realAqiMatrix);
+    disp(interpolationAqiMatrix);
     plot(dateTimeShown, interpolationAqiMatrix, 'r-', realDateTimeShow, realAqiMatrix, 'b-');
     
     if aqi <= 50
@@ -365,7 +364,7 @@ disp(datetime);
 x = [];
 for i=1:n1
     if isequal(datetime,loadfilemonth(2:3,i))
-        disp(loadfileAqi(i));
+%         disp(loadfileAqi(i));
         x = [x,loadfileAqi(i)];
     end
 end
