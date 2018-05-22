@@ -183,51 +183,46 @@ function searchButton_Callback(hObject, eventdata, handles)
 date = get(handles.searchDay,'string');
 month = get(handles.searchMonth,'value');
 [dateData, tempData, rainData, aqiData] = loadRealData();
-disp(date);
-disp(month);
-disp(length(dateData));
 [~, dateDataLength] = size(dateData);
 yearString = get(handles.year, 'string');
 yearChosen = get(handles.year, 'value');
 year = yearString(yearChosen);
 year = str2double(year);
 date = str2double(date);
-d = 0;
+realDataIndex = 0;
 chosenDate = datetime(year, month, date);
-disp(chosenDate);
-for j = 1:dateDataLength
-    comparedDate = datetime(dateData(3, j), dateData(2, j), dateData(1, j));
+for index = 1 : dateDataLength
+    comparedDate = datetime(dateData(3, index), dateData(2, index), dateData(1, index));
     if comparedDate == chosenDate
-       d = j;
+       realDataIndex = index;
        break;
     end
 end
-n = length(aqiData);
+readlDataLength = length(aqiData);
 aqi = 0;
 rain = 0;
 temp = 0;
-if (d > 0 && d <= n) 
-    aqi = aqiData(d);
-    rain = rainData(d);
-    temp = tempData(d);
+if (realDataIndex > 0 && realDataIndex <= readlDataLength) 
+    aqi = aqiData(realDataIndex);
+    rain = rainData(realDataIndex);
+    temp = tempData(realDataIndex);
 end
 
-if (d == 0)
+forecastDataIndex = 0;
+if (realDataIndex == 0)
     [forecastDate, forecastTemp, forecastRain] = loadForecastData();
     forecastDataLength = length(forecastDate);
     for index = 1 : forecastDataLength
         comparedDate = datetime(forecastDate(3, index), forecastDate(2, index), forecastDate(1, index));
-        disp(comparedDate);
-        disp(chosenDate);
         if comparedDate == chosenDate
            rain = forecastRain(index);
            temp = forecastTemp(index);
-           d = index;
+           forecastDataIndex = index;
            break;
         end
     end 
     
-    if d ~= 0
+    if forecastDataIndex ~= 0
         [dateInterpolation, aqiInterpolation] = loadInterpolationData();
         interpolationAqi = 0;
         [~, interpolationDataLength] = size(dateInterpolation);
@@ -258,6 +253,72 @@ if aqi ~= 0
     set(handles.searchRain,'string', rain);
     set(handles.searchTemp,'string', temp);
     set(handles.searchAqi,'string',aqi);
+    dateTimeShown = chosenDate + [-3 : 3];
+    dateShowQuantity = 7;
+    realAqiMatrix = zeros([1, dateShowQuantity]);
+    interpolationAqiMatrix = zeros([1, dateShowQuantity]);
+
+    realDataLength = length(aqiData);
+    for i = 1 : dateShowQuantity
+        for j = 1 : realDataLength
+            comparedDateTime = datetime(dateData(3, j), dateData(2, j), dateData(1, j));
+            if dateTimeShown(i) == comparedDateTime
+                realAqiMatrix(i) = aqiData(j);
+            end
+        end
+    end
+    
+    [interpolationDate, interpolationAqi] = loadInterpolationData();
+    interpolationDataLength = length(interpolationAqi);
+    count = 0;
+    for i = 1 : dateShowQuantity
+        for j = 1 : interpolationDataLength
+            comparedTime = datetime(interpolationDate(3, j), interpolationDate(2, j), interpolationDate(1, j));
+            if dateTimeShown(i) == comparedTime
+                count = count + 1;
+                interpolationAqiMatrix(i) = interpolationAqi(j);
+            end
+        end
+    end
+
+    if (count ~= dateShowQuantity)
+        [forecastDate, forecastTemp, forecastRain] = loadForecastData();
+        forcastDataLength = length(forecastRain);
+        for i = 1 : dateShowQuantity
+            if (interpolationAqiMatrix(i) == 0)
+                for j = 1 : forcastDataLength
+                    comparedTime = datetime(forecastDate(3, j), forecastDate(2, j), forecastDate(1, j));
+                    if dateTimeShown(i) == comparedTime
+                        aqiLength = length(aqiData);
+                        tempLength = length(tempData);
+                        rainLength = length(rainData);
+                        minimum = min([aqiLength tempLength rainLength]);
+                        aqiData = aqiData(1 : minimum);
+                        tempData = tempData(1 : minimum);
+                        rainData = rainData(1 : minimum);
+                        interpolationAqi = griddata(tempData, rainData, aqiData, forecastTemp(j), forecastRain(j));
+                        interpolationAqiMatrix(i) = interpolationAqi;
+                        insertInterpolationData(forecastDate(:, j), interpolationAqi);
+                    end
+                end
+            end
+        end 
+    end
+    
+    axes(handles.weekAxes);
+    zero_indeces = realAqiMatrix == 0;
+    realAqiMatrix(zero_indeces) = [];
+    realDateTimeShow = dateTimeShown;
+    realDateTimeShow(zero_indeces) = [];
+    for index = 1 : length(realDateTimeShow)
+        for j = 1 : dateShowQuantity
+            if (realDateTimeShow(index) == dateTimeShown(j))
+                interpolationAqiMatrix(j) = realAqiMatrix(index);
+            end
+        end
+    end
+    plot(dateTimeShown, interpolationAqiMatrix, 'r-', realDateTimeShow, realAqiMatrix, 'b-');
+    
     if aqi <= 50
         set(handles.searchAqiLevel,'String','Good');
         set(handles.text10,'String','Air quality is considered satisfactory, and air pollution poses little or no risk');
@@ -512,18 +573,9 @@ function pushbutton4_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-
-temp = get(handles.forecastTemp,'String');
-ra = get(handles.forecastRain,'String'); 
-
-
-    aqiData = getAqi();
-    tempData = getTemperature();
-
-    rainData = getRain();
-    disp(length(rainData));
-    disp(length(aqiData));
-    disp(length(tempData));
+    temp = get(handles.forecastTemp,'String');
+    ra = get(handles.forecastRain,'String'); 
+    [~, tempData, rainData, aqiData] = loadRealData();
     aqiLength = length(aqiData);
     tempLength = length(tempData);
     rainLength = length(rainData);
