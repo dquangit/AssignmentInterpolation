@@ -255,7 +255,7 @@ disp(datetime);
 x = [];
 for i=1:n1
     if isequal(datetime,loadfilemonth(2:3,i))
-        disp(loadfileAqi(i));
+%         disp(loadfileAqi(i));
         x = [x,loadfileAqi(i)];
     end
 end
