@@ -22,7 +22,7 @@ function varargout = AQIForecast(varargin)
 
 % Edit the above text to modify the response to help AQIForecast
 
-% Last Modified by GUIDE v2.5 19-Jun-2018 12:13:27
+% Last Modified by GUIDE v2.5 23-Jun-2018 01:09:53
 % Last Modified by GUIDE v2.5 18-Jun-2018 12:49:35
 
 % Begin initialization code - DO NOT EDIT
@@ -201,18 +201,19 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in selectDay.
-function selectDay_Callback(hObject, eventdata, handles)
-% hObject    handle to selectDay (see GCBO)
+% --- Executes on button press in searchSelectDayButton.
+function searchSelectDayButton_Callback(hObject, eventdata, handles)
+% hObject    handle to searchSelectDayButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-day = uicalendar;
-disp(day);
+uicalendar('Weekend', [1 0 0 0 0 0 1], ...  
+'SelectionType', 1, ...  
+'DestinationUI',handles.searchDay);
 
 
-% --- Executes on button press in pushbutton7.
-function pushbutton7_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton7 (see GCBO)
+% --- Executes on button press in calExecute.
+function calExecute_Callback(hObject, eventdata, handles)
+% hObject    handle to calExecute (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
@@ -247,26 +248,26 @@ function pushbutton8_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 
-% --- Executes on button press in selectForeCastDay.
-function selectForeCastDay_Callback(hObject, eventdata, handles)
-% hObject    handle to selectForeCastDay (see GCBO)
+% --- Executes on button press in selectForeCastDayButton.
+function selectForeCastDayButton_Callback(hObject, eventdata, handles)
+% hObject    handle to selectForeCastDayButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
 
 
-function edit4_Callback(hObject, eventdata, handles)
-% hObject    handle to edit4 (see GCBO)
+function forecastDay_Callback(hObject, eventdata, handles)
+% hObject    handle to forecastDay (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit4 as text
-%        str2double(get(hObject,'String')) returns contents of edit4 as a double
+% Hints: get(hObject,'String') returns contents of forecastDay as text
+%        str2double(get(hObject,'String')) returns contents of forecastDay as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit4_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit4 (see GCBO)
+function forecastDay_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to forecastDay (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
