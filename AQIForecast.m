@@ -23,6 +23,7 @@ function varargout = AQIForecast(varargin)
 % Edit the above text to modify the response to help AQIForecast
 
 % Last Modified by GUIDE v2.5 19-Jun-2018 12:13:27
+% Last Modified by GUIDE v2.5 18-Jun-2018 12:49:35
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -104,6 +105,9 @@ set(handles.tabUpdate,'visible','off');
 % --- Executes on button press in tabFilterMonth.
 function tabFilterMonth_Callback(hObject, eventdata, handles)
 
+% hObject    handle to tabFilterMonth (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
 set(handles.tabSearchData,'visible','off');
 set(handles.tabFCast,'visible','off');
 set(handles.tabCalculator,'visible','off');
@@ -119,6 +123,7 @@ monthYear = [y(2,:);
 str = [monthYear(1,:)+"/"+monthYear(2,:)];
 dateInput = cellstr(str);
 set(handles.selectMonth,'string',dateInput);
+
 
 % --- Executes on button press in tabUpdateData.
 function tabUpdateData_Callback(hObject, eventdata, handles)
@@ -160,7 +165,6 @@ aqiInput = cellstr(str3);
 
 datos = [dateInput' tempInput' rainInput' aqiInput'];
 set(handles.uitable1,'data',datos);
-
 
 
 
@@ -515,6 +519,13 @@ if length(pollutiondays) > length(unpollutiondays)
 elseif length(pollutiondays) < length(unpollutiondays)
     set(handles.EvaluateMonth,'string','Good');
 end
+% hObject    handle to selectMonth (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns selectMonth contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from selectMonth
+
 
 % --- Executes during object creation, after setting all properties.
 function selectMonth_CreateFcn(hObject, eventdata, handles)

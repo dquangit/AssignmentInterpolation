@@ -362,9 +362,19 @@ if aqi ~= 0 && temp ~=0
             end
         end
     end
-    disp(realAqiMatrix);
-    disp(interpolationAqiMatrix);
-    plot(dateTimeShown, interpolationAqiMatrix, 'r-', realDateTimeShow, realAqiMatrix, 'b-');
+else
+    % noi suy luong mua + nhiet do 
+    chosenDate = [date; month; year];
+    interpolationRain = getRainByDate(chosenDate);
+    interpolationTemp = getTempByDate(chosenDate);
+    aqi = griddata(tempData, rainData, aqiData, interpolationTemp, interpolationRain);
+    set(handles.searchRain,'string', interpolationRain);
+    set(handles.searchTemp,'string', interpolationTemp);
+    set(handles.searchAqi,'string',aqi);
+end
+    %disp(realAqiMatrix);
+    %disp(interpolationAqiMatrix);
+    %plot(dateTimeShown, interpolationAqiMatrix, 'r-', realDateTimeShow, realAqiMatrix, 'b-');
     
     axes(handles.axes8);
     disp(realtemp);
@@ -392,9 +402,6 @@ if aqi ~= 0 && temp ~=0
         set(handles.searchAqiLevel,'String','Good');
         set(handles.text10, 'String', 'Health alert: everyone may experience more serious health effects.');
     end
-else 
-    msgbox('Data not found');
-end
 
 
 % --- Executes on selection change in monthfilter.
@@ -1166,7 +1173,6 @@ set(handles.uipanel2,'visible','off')
 set(handles.uipanel7,'visible','off')
 set(handles.uipanel9,'visible','off')
 %set(handles.uipanel13,'visible','on')
-
 
 % --- Executes on button press in pushbutton8.
 function pushbutton8_Callback(hObject, eventdata, handles)
