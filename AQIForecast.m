@@ -22,7 +22,7 @@ function varargout = AQIForecast(varargin)
 
 % Edit the above text to modify the response to help AQIForecast
 
-% Last Modified by GUIDE v2.5 19-Jun-2018 12:13:27
+% Last Modified by GUIDE v2.5 23-Jun-2018 01:09:53
 % Last Modified by GUIDE v2.5 18-Jun-2018 12:49:35
 
 % Begin initialization code - DO NOT EDIT
@@ -201,20 +201,57 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in selectDay.
-function selectDay_Callback(hObject, eventdata, handles)
-% hObject    handle to selectDay (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-day = uicalendar;
-disp(day);
+% --- Executes on button press in searchSelectDayButton.
+function searchSelectDayButton_Callback(hObject, eventdata, handles)
+    % hObject    handle to searchSelectDayButton (see GCBO)
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    structure with handles and user data (see GUIDATA)
+    uicalendar('Weekend', [1 0 0 0 0 0 1], ...  
+    'SelectionType', 1, ...  
+    'DestinationUI', {handles.searchDay, 'String'});
+    waitfor({handles.searchDay, 'String'});
+    selectedDate = get(handles.searchDay, 'String');
+    disp('Fuck');
 
 
-% --- Executes on button press in pushbutton7.
-function pushbutton7_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton7 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% --- Executes on button press in calExecute.
+function calExecute_Callback(hObject, eventdata, handles)
+    tempInput = get(handles.calTemp,'String');
+    rainInput = get(handles.calRain,'String'); 
+    [~, tempData, rainData, aqiData] = loadRealData();
+    aqiLength = length(aqiData);
+    tempLength = length(tempData);
+    rainLength = length(rainData);
+    minimum = min([aqiLength tempLength rainLength]);
+    %disp([aqiLength tempLength rainLength]);
+    aqiData = aqiData(1 : minimum);
+    tempData = tempData(1 : minimum);
+    rainData = rainData(1 : minimum);
+    result = calculateAqi(tempData, rainData, aqiData, tempInput, rainInput);
+    if result == -1 
+        msgbox('Invalidate input');
+    else
+        set(handles.calResult, 'string', num2str(result));
+        if result <= 50
+            set(handles.calEvaluate,'String','Good');
+            set(handles.calWarning,'String','Air quality is considered satisfactory, and air pollution poses little or no risk');
+        elseif result <= 100
+            set(handles.calEvaluate,'String','Moderate');
+            set(handles.calWarning,'String','Air quality is acceptable; however, for some pollutants there may be a moderate health concern for a very small number of people who are unusually sensitive to air pollution.');
+        elseif result <= 150
+            set(handles.calEvaluate,'String','Unhealthy for Sensitive Groups');
+            set(handles.calWarning,'String','Members of sensitive groups may experience health effects. The general public is not likely to be affected.');
+        elseif result <= 200
+            set(handles.calEvaluate,'String','Unhealthy');
+            set(handles.calWarning,'String', 'Everyone may begin to experience health effects; members of sensitive groups may experience more serious health effects');
+        elseif result <= 300
+            set(handles.evaluate,'String','Very Unhealthy');
+            set(handles.calWarning, 'String', 'Health warnings of emergency conditions. The entire population is more likely to be affected.');
+        else
+            set(handles.calEvaluate,'String','Good');
+            set(handles.calWarning, 'String', 'Health alert: everyone may experience more serious health effects.');
+        end
+    end
 
 
 % --- Executes on selection change in listbox1.
@@ -247,26 +284,26 @@ function pushbutton8_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 
-% --- Executes on button press in selectForeCastDay.
-function selectForeCastDay_Callback(hObject, eventdata, handles)
-% hObject    handle to selectForeCastDay (see GCBO)
+% --- Executes on button press in selectForeCastDayButton.
+function selectForeCastDayButton_Callback(hObject, eventdata, handles)
+% hObject    handle to selectForeCastDayButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
 
 
-function edit4_Callback(hObject, eventdata, handles)
-% hObject    handle to edit4 (see GCBO)
+function forecastDay_Callback(hObject, eventdata, handles)
+% hObject    handle to forecastDay (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit4 as text
-%        str2double(get(hObject,'String')) returns contents of edit4 as a double
+% Hints: get(hObject,'String') returns contents of forecastDay as text
+%        str2double(get(hObject,'String')) returns contents of forecastDay as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit4_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit4 (see GCBO)
+function forecastDay_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to forecastDay (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
