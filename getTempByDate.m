@@ -58,10 +58,9 @@ function ouput = interpolationTempByDate(dateData, tempData, inputDate)
     disp(size(dateData));
     disp(length(tempData));
     dataLength = length(tempData);
-    dateInput = datetime(inputDate(3), inputDate(2), inputDate(1));
     lastDate = datetime(dateData(3, dataLength), dateData(2, dataLength), dateData(1, dataLength));
     firstInterpolationDate = lastDate + caldays(1);
-    interpolationDate = firstInterpolationDate : dateInput;
+    interpolationDate = firstInterpolationDate : inputDate;
     interpolationLenght = length(interpolationDate);
     for index = 1 : interpolationLenght
         dataLength = length(tempData);
@@ -71,6 +70,6 @@ function ouput = interpolationTempByDate(dateData, tempData, inputDate)
         out = griddata(x1, x2, y, tempData(dataLength - 1), tempData(dataLength));
         tempData = [tempData out];
     end
-    ouput = round(tempData(end));
+    ouput = tempData;
 end
 

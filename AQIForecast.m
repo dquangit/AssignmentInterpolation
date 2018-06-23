@@ -215,7 +215,9 @@ function searchDay(handles)
     stringData = get(handles.searchDay, 'String');
     selectedDate = datetime(stringData);
     selectedDatePosition = getDatePosition(selectedDate, dateData);
-    if (selectedDatePosition == -1)
+    if (selectedDate >= datetime('now'))
+        msgbox('Data has not been updated.');
+    elseif (selectedDatePosition == -1)
         msgbox('Data not found!');
     else
         weekMatrix = selectedDate + [-3 : 3];
@@ -307,10 +309,50 @@ function pushbutton8_Callback(hObject, eventdata, handles)
 
 % --- Executes on button press in selectForeCastDayButton.
 function selectForeCastDayButton_Callback(hObject, eventdata, handles)
-% hObject    handle to selectForeCastDayButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+    uicalendar('Weekend', [1 0 0 0 0 0 1], ...  
+    'SelectionType', 1, ...  
+    'DestinationUI', {handles.forecastDay, 'String'});
+    waitfor(handles.forecastDay, 'String');
+    forecastDay(handles);
 
+function forecastDay(handles)
+    [~, tempData, rainData, aqiData] = loadRealData();
+    stringData = get(handles.forecastDay, 'String');
+    selectedDate = datetime(stringData);
+    now = datetime('now');
+    currentDate = datetime(year(now), month(now), day(now));
+    if selectedDate < currentDate
+        msgbox('Please select current day or another day in the future.');
+    else
+        nextWeekSelectedDay = selectedDate + caldays(6);
+        week = selectedDate : nextWeekSelectedDay;
+        weekLength = length(week);
+        aqiMatrix = zeros([1 weekLength]);
+        rainMatrix = getRainByDate(week(end));
+        tempMatrix = getTempByDate(week(end));
+        rainMatrix = rainMatrix(end - weekLength + 1 : end);
+        tempMatrix = tempMatrix(end - weekLength + 1 : end);
+        for index = 1 : weekLength 
+            aqiMatrix(index) = griddata(tempData, rainData, aqiData, tempMatrix(index), rainMatrix(index));
+        end
+        set(handles.forecastTemp, 'String', tempMatrix(1));
+        set(handles.forecastRain, 'String', rainMatrix(1));
+        set(handles.forecastAqi, 'String', aqiMatrix(1));
+        
+        [evaluate, warning] = getAqiEvaluate(aqiMatrix(1));
+        
+        set(handles.forecastEvaluate, 'String', evaluate);
+        set(handles.forecastWarning, 'String', warning);
+        
+        axes(handles.forecastTempAxes);
+        plot(week, tempMatrix, 'r');
+        
+        axes(handles.forecastRainAxes);
+        plot(week, rainMatrix, 'g');
+        
+        axes(handles.forecastAqiAxes);
+        plot(week, aqiMatrix, 'b');
+    end
 
 
 function forecastDay_Callback(hObject, eventdata, handles)

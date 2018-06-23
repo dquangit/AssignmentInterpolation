@@ -370,7 +370,7 @@ else
     aqi = griddata(tempData, rainData, aqiData, interpolationTemp, interpolationRain);
     set(handles.searchRain,'string', interpolationRain);
     set(handles.searchTemp,'string', interpolationTemp);
-    set(handles.searchAqi,'string',aqi);
+    set(handles.searchAqi,'string', aqi);
 end
     %disp(realAqiMatrix);
     %disp(interpolationAqiMatrix);

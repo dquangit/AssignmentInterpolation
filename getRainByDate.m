@@ -55,13 +55,10 @@ function output = getInterpolationRainByDate(inputDate)
 end
 
 function ouput = interpolationRainByDate(dateData, rainData, inputDate)
-    disp(size(dateData));
-    disp(length(rainData));
     dataLength = length(rainData);
-    dateInput = datetime(inputDate(3), inputDate(2), inputDate(1));
     lastDate = datetime(dateData(3, dataLength), dateData(2, dataLength), dateData(1, dataLength));
     firstInterpolationDate = lastDate + caldays(1);
-    interpolationDate = firstInterpolationDate : dateInput;
+    interpolationDate = firstInterpolationDate : inputDate;
     interpolationLenght = length(interpolationDate);
     for index = 1 : interpolationLenght
         dataLength = length(rainData);
@@ -71,6 +68,6 @@ function ouput = interpolationRainByDate(dateData, rainData, inputDate)
         out = griddata(x1, x2, y, rainData(dataLength - 1), rainData(dataLength));
         rainData = [rainData out];
     end
-    ouput = round(rainData(end));
+    ouput = rainData;
 end
 
