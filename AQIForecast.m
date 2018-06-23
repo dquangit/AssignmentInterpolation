@@ -207,10 +207,10 @@ function searchSelectDayButton_Callback(hObject, eventdata, handles)
     'SelectionType', 1, ...  
     'DestinationUI', {handles.searchDay, 'String'});
     waitfor(handles.searchDay, 'String');
-    handleData(handles);
+    searchDay(handles);
 
         
-function handleData(handles)
+function searchDay(handles)
     [dateData, tempData, rainData, aqiData] = loadRealData();
     stringData = get(handles.searchDay, 'String');
     selectedDate = datetime(stringData);
@@ -223,12 +223,23 @@ function handleData(handles)
         tempMatrix = zeros([1 weekLength]);
         rainMatrix = zeros([1 weekLength]);
         aqiMatrix = zeros([1 weekLength]);
+        [temp, rain, aqi] = searchRealData(dateData, tempData, rainData, aqiData, selectedDate);
+        set(handles.searchTemp, 'String', num2str(temp));
+        set(handles.searchRain, 'String', num2str(rain));
+        set(handles.searchAqi, 'String', num2str(aqi));
+        [evaluate, warning] = getAqiEvaluate(aqi);
+        set(handles.searchEvaluate, 'String', evaluate);
+        set(handles.searchWarning, 'String', warning);
         for index = 1 : weekLength
             [temp, rain, aqi] = searchRealData(dateData, tempData, rainData, aqiData, weekMatrix(index));
-            if rain ~= -1
+            if aqi ~= -1
                 tempMatrix(index) = temp;
                 rainMatrix(index) = rain;
                 aqiMatrix(index) = aqi;
+            else
+                tempMatrix(index) = NaN;
+                rainMatrix(index) = NaN;
+                aqiMatrix(index) = NaN;
             end
         end
         axes(handles.searchTempAxes);
@@ -251,7 +262,6 @@ function calExecute_Callback(hObject, eventdata, handles)
     tempLength = length(tempData);
     rainLength = length(rainData);
     minimum = min([aqiLength tempLength rainLength]);
-    %disp([aqiLength tempLength rainLength]);
     aqiData = aqiData(1 : minimum);
     tempData = tempData(1 : minimum);
     rainData = rainData(1 : minimum);
@@ -259,26 +269,9 @@ function calExecute_Callback(hObject, eventdata, handles)
     if result == -1 
         msgbox('Invalidate input');
     else
-        set(handles.calResult, 'string', num2str(result));
-        if result <= 50
-            set(handles.calEvaluate,'String','Good');
-            set(handles.calWarning,'String','Air quality is considered satisfactory, and air pollution poses little or no risk');
-        elseif result <= 100
-            set(handles.calEvaluate,'String','Moderate');
-            set(handles.calWarning,'String','Air quality is acceptable; however, for some pollutants there may be a moderate health concern for a very small number of people who are unusually sensitive to air pollution.');
-        elseif result <= 150
-            set(handles.calEvaluate,'String','Unhealthy for Sensitive Groups');
-            set(handles.calWarning,'String','Members of sensitive groups may experience health effects. The general public is not likely to be affected.');
-        elseif result <= 200
-            set(handles.calEvaluate,'String','Unhealthy');
-            set(handles.calWarning,'String', 'Everyone may begin to experience health effects; members of sensitive groups may experience more serious health effects');
-        elseif result <= 300
-            set(handles.evaluate,'String','Very Unhealthy');
-            set(handles.calWarning, 'String', 'Health warnings of emergency conditions. The entire population is more likely to be affected.');
-        else
-            set(handles.calEvaluate,'String','Good');
-            set(handles.calWarning, 'String', 'Health alert: everyone may experience more serious health effects.');
-        end
+        [evaluate, warning] =  getAqiEvaluate(result);
+        set(handles.calEvaluate, 'String', evaluate);
+        set(handles.calWarning, 'String', warning);
     end
 
 
