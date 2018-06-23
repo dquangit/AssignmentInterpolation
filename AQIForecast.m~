@@ -432,8 +432,9 @@ rainInput = get(handles.edit7, 'String');
 day = get(handles.edit5,'string');
 formatIn = 'dd/mm/yyyy';
 invalidateDate = false;
-dateInput = datestr(day,formatIn)
+
 if (length(day) >= 1)
+    dateInput = datestr(day,formatIn)
     dateInput = split(dateInput,'/')
     day= str2double(dateInput(1));
     month= str2double(dateInput(2));
