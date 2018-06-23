@@ -114,7 +114,7 @@ set(handles.tabCalculator,'visible','off');
 set(handles.tabMonthFilter,'visible','on');
 set(handles.tabUpdate,'visible','off');
 
-[loadfilemonth, ~, ~, loadfileAqi] = loadRealData();
+[loadfilemonth, ~, ~, ~] = loadRealData();
 yearMonth = [loadfilemonth(3,:);
      loadfilemonth(2,:)];
 y = unique(yearMonth','rows')';
@@ -136,7 +136,7 @@ set(handles.tabCalculator,'visible','off');
 set(handles.tabMonthFilter,'visible','off');
 set(handles.tabUpdate,'visible','on');
 
-[dateData, tempData, rainData, aqiData] = loadRealData();
+[dateData, temp, rain, aqi] = loadRealData();
 % n = length(dateData);
 % o = [];
 % for i=1 :n
@@ -145,9 +145,6 @@ set(handles.tabUpdate,'visible','on');
 % % disp(cellstr(o));
 % oo = cellstr(o);
 
-rain = load('data/realdata/rain.txt');
-temp = load('data/realdata/temp.txt');
-aqi = load('data/realdata/aqi.txt');
 day = dateData(1,:);
 month = dateData(2,:);
 year = dateData(3,:);
@@ -209,11 +206,42 @@ function searchSelectDayButton_Callback(hObject, eventdata, handles)
     uicalendar('Weekend', [1 0 0 0 0 0 1], ...  
     'SelectionType', 1, ...  
     'DestinationUI', {handles.searchDay, 'String'});
-    waitfor({handles.searchDay, 'String'});
-    selectedDate = get(handles.searchDay, 'String');
-    disp('Fuck');
+    waitfor(handles.searchDay, 'String');
+    handleData(handles);
 
-
+        
+function handleData(handles)
+    [dateData, tempData, rainData, aqiData] = loadRealData();
+    stringData = get(handles.searchDay, 'String');
+    selectedDate = datetime(stringData);
+    selectedDatePosition = getDatePosition(selectedDate, dateData);
+    if (selectedDatePosition == -1)
+        msgbox('Data not found!');
+    else
+        weekMatrix = selectedDate + [-3 : 3];
+        weekLength = length(weekMatrix);
+        tempMatrix = zeros([1 weekLength]);
+        rainMatrix = zeros([1 weekLength]);
+        aqiMatrix = zeros([1 weekLength]);
+        for index = 1 : weekLength
+            [temp, rain, aqi] = searchRealData(dateData, tempData, rainData, aqiData, weekMatrix(index));
+            if rain ~= -1
+                tempMatrix(index) = temp;
+                rainMatrix(index) = rain;
+                aqiMatrix(index) = aqi;
+            end
+        end
+        axes(handles.searchTempAxes);
+        plot(weekMatrix, tempMatrix, 'r');
+        
+        axes(handles.searchRainAxes);
+        plot(weekMatrix, rainMatrix, 'g');
+        
+        axes(handles.searchAqiAxes);
+        plot(weekMatrix, aqiMatrix, 'b');
+    end
+        
+        
 % --- Executes on button press in calExecute.
 function calExecute_Callback(hObject, eventdata, handles)
     tempInput = get(handles.calTemp,'String');
@@ -432,9 +460,9 @@ rainInput = get(handles.edit7, 'String');
 day = get(handles.edit5,'string');
 formatIn = 'dd/mm/yyyy';
 invalidateDate = false;
-dateInput = datestr(day,formatIn)
+dateInput = datestr(day,formatIn);
 if (length(day) >= 1)
-    dateInput = split(dateInput,'/')
+    dateInput = split(dateInput,'/');
     day= str2double(dateInput(1));
     month= str2double(dateInput(2));
     year= str2double(dateInput(3));
