@@ -514,10 +514,14 @@ set(handles.PollutedDaysQuantity,'string',num2str(pollutiondays));
 set(handles.UnpollutedDaysQuantity,'string',num2str(unpollutiondays));
 set(handles.HighestAqiDay,'string',daymax);
 set(handles.LowestAqiDay,'string',daymin);
+
 if length(pollutiondays) > length(unpollutiondays)
-    set(handles.EvaluateMonth,'string','Unhealthy');
+        set(handles.EvaluateMonth,'string','Unhealthy');
 elseif length(pollutiondays) < length(unpollutiondays)
-    set(handles.EvaluateMonth,'string','Good');
+        set(handles.EvaluateMonth,'string','Good');
+end
+if length(x)<15
+    set(handles.EvaluateMonth,'string','Unknown');
 end
 % hObject    handle to selectMonth (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
