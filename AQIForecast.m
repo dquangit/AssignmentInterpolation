@@ -22,7 +22,7 @@ function varargout = AQIForecast(varargin)
 
 % Edit the above text to modify the response to help AQIForecast
 
-% Last Modified by GUIDE v2.5 23-Jun-2018 01:09:53
+% Last Modified by GUIDE v2.5 25-Jun-2018 16:35:30
 % Last Modified by GUIDE v2.5 18-Jun-2018 12:49:35
 
 % Begin initialization code - DO NOT EDIT
@@ -344,14 +344,16 @@ function forecastDay(handles)
         set(handles.forecastEvaluate, 'String', evaluate);
         set(handles.forecastWarning, 'String', warning);
         
-        axes(handles.forecastTempAxes);
-        plot(week, tempMatrix, 'r');
+        axes(handles.forecastAxes);
+        bar(week, aqiMatrix, 'b');
         
-        axes(handles.forecastRainAxes);
-        plot(week, rainMatrix, 'g');
+        hold on;
+        plot(week, rainMatrix, 'g','Linewidth', 2);
         
-        axes(handles.forecastAqiAxes);
-        plot(week, aqiMatrix, 'b');
+        hold on;
+        plot(week, tempMatrix, 'r', 'Linewidth', 2);
+        
+        hold off;
     end
 
 
