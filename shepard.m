@@ -16,7 +16,7 @@ function out = shepard(X, Y, x, k)
     for index = 1 : lengthInput
        out = out + (w(index)*Y(index));
     end
-    disp(out);
+
     if isnan(out)
         for index = lengthInput : -1 : 1
             if (X(index) == x)
