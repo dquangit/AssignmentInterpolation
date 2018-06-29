@@ -244,14 +244,18 @@ function searchDay(handles)
                 aqiMatrix(index) = NaN;
             end
         end
-        axes(handles.searchTempAxes);
-        plot(weekMatrix, tempMatrix, 'r');
-        
-        axes(handles.searchRainAxes);
-        plot(weekMatrix, rainMatrix, 'g');
-        
-        axes(handles.searchAqiAxes);
-        plot(weekMatrix, aqiMatrix, 'b');
+        axes(handles.searchAxes);
+        bar(weekMatrix, aqiMatrix, 'b');
+        for i1=1:numel(aqiMatrix)
+            text(weekMatrix(i1),aqiMatrix(i1),num2str(aqiMatrix(i1),'%0.2f'),...
+               'HorizontalAlignment','center',...
+               'VerticalAlignment','bottom')
+        end
+        hold on;
+        plot(weekMatrix, tempMatrix, 'r', 'Linewidth', 2);
+        hold on;
+        plot(weekMatrix, rainMatrix, 'g', 'Linewidth', 2);
+        hold off;
     end
         
         
@@ -267,6 +271,8 @@ function calExecute_Callback(hObject, eventdata, handles)
         [evaluate, warning] =  getAqiEvaluate(result);
         set(handles.calEvaluate, 'String', evaluate);
         set(handles.calWarning, 'String', warning);
+        result = round(result * 100) / 100;
+        set(handles.calResult, 'String', num2str(result));
     end
 
 
@@ -339,7 +345,11 @@ function forecastDay(handles)
         
         axes(handles.forecastAxes);
         bar(week, aqiMatrix, 'b');
-        
+        for i1=1:numel(aqiMatrix)
+            text(week(i1),aqiMatrix(i1),num2str(aqiMatrix(i1),'%0.2f'),...
+               'HorizontalAlignment','center',...
+               'VerticalAlignment','bottom')
+        end
         hold on;
         plot(week, rainMatrix, 'g','Linewidth', 2);
         
