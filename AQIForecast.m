@@ -264,13 +264,6 @@ function calExecute_Callback(hObject, eventdata, handles)
     tempInput = get(handles.calTemp,'String');
     rainInput = get(handles.calRain,'String'); 
     [~, tempData, rainData, aqiData] = loadRealData();
-    aqiLength = length(aqiData);
-    tempLength = length(tempData);
-    rainLength = length(rainData);
-    minimum = min([aqiLength tempLength rainLength]);
-    aqiData = aqiData(1 : minimum);
-    tempData = tempData(1 : minimum);
-    rainData = rainData(1 : minimum);
     result = calculateAqi(tempData, rainData, aqiData, tempInput, rainInput);
     if result == -1 
         msgbox('Invalidate input');
@@ -554,14 +547,6 @@ elseif (invalidateData)
     msgbox('Invalidated data');
 else
     [~, tempData, rainData, aqiData] = loadRealData();
-    aqiLength = length(aqiData);
-    tempLength = length(tempData);
-    rainLength = length(rainData);
-    minimum = min([aqiLength tempLength rainLength]);
-    disp([aqiLength tempLength rainLength]);
-    aqiData = aqiData(1 : minimum);
-    tempData = tempData(1 : minimum);
-    rainData = rainData(1 : minimum);
     aqiInterpolation = griddata(tempData, rainData, aqiData, tempInput, rainInput);
     disp(aqiInput);
     disp(aqiInput - aqiInterpolation);
