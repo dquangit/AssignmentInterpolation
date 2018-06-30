@@ -690,7 +690,7 @@ global firstTimeClick;
 % hObject    handle to pushbutton5 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-set(handles.uipanel7,'visible','on');
+% set(handles.uipanel7,'visible','on');
 set(handles.uipanel9,'visible','off');
 set(handles.uipanel1,'visible','off');
 set(handles.uipanel2,'visible','off');
