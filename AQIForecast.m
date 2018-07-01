@@ -320,9 +320,9 @@ function forecastDay(handles)
     selectedDate = datetime(stringData);
     now = datetime('now');
     currentDate = datetime(year(now), month(now), day(now));
-    if selectedDate < currentDate
-        msgbox('Please select current day or another day in the future.');
-    else
+%     if selectedDate < currentDate
+%         msgbox('Please select current day or another day in the future.');
+%     else
         nextWeekSelectedDay = selectedDate + caldays(6);
         week = selectedDate : nextWeekSelectedDay;
         weekLength = length(week);
@@ -358,7 +358,7 @@ function forecastDay(handles)
         plot(week, tempMatrix, 'r', 'Linewidth', 2);
         
         hold off;
-    end
+%     end
 
 
 function forecastDay_Callback(hObject, eventdata, handles)
