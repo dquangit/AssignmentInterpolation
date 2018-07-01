@@ -3,7 +3,7 @@ rainJune = zeros(size(tempJune));
 aqiJune = [100 83.61 68.15 96.01 31.92 58.09 129.5 154.41 504.41 335.71 264.1 105.88 41.03 93.51 59.34 135.56 88.35 130.82 106.05 97.42 181.48 32 73.92 127.7 77.64 42.89 70.24 41.21]; 
 
 [~, temp, rain, aqi] = loadRealData;
-
+juneSize = length(aqiJune);
 result = zeros(size(aqiJune));
 
 for index = 1 : juneSize
