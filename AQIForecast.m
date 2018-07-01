@@ -332,6 +332,7 @@ function forecastDay(handles)
         rainMatrix = rainMatrix(end - weekLength + 1 : end);
         tempMatrix = tempMatrix(end - weekLength + 1 : end);
         for index = 1 : weekLength 
+         
             aqiMatrix(index) = griddata(tempData, rainData, aqiData, tempMatrix(index), rainMatrix(index));
         end
         set(handles.forecastTemp, 'String', tempMatrix(1));

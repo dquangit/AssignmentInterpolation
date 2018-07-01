@@ -62,14 +62,16 @@ function ouput = interpolationTempByDate(dateData, tempData, inputDate)
     firstInterpolationDate = lastDate + caldays(1);
     interpolationDate = firstInterpolationDate : inputDate;
     interpolationLenght = length(interpolationDate);
-    for index = 1 : interpolationLenght
-        dataLength = length(tempData);
-        x1 = tempData(1 : end - 2);
-        x2 = tempData(2 : end - 1);
-        y = tempData(3 : end);
-        out = griddata(x1, x2, y, tempData(dataLength - 1), tempData(dataLength));
-        tempData = [tempData out];
+    x1 = tempData(1 : end - 2);
+    x2 = tempData(2 : end - 1);
+    y = tempData(3 : end);
+    result = zeros([1 (interpolationLenght + 2)]);
+    result(1) =  tempData(end - 1);
+    result(2) = tempData(end);
+    for index = 3 : interpolationLenght + 2
+        out = griddata(x1, x2, y, result(index - 2), result(index - 1));
+        result(index) = out;
     end
-    ouput = tempData;
+    ouput = result(3 : end);
 end
 
