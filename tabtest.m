@@ -58,8 +58,11 @@ handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
+
 global firstTimeClick;
+
 firstTimeClick = true;
+
 dataPath;
 set(handles.uipanel9,'visible','off')
 

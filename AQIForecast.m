@@ -22,7 +22,7 @@ function varargout = AQIForecast(varargin)
 
 % Edit the above text to modify the response to help AQIForecast
 
-% Last Modified by GUIDE v2.5 25-Jun-2018 16:35:30
+% Last Modified by GUIDE v2.5 02-Jul-2018 11:56:14
 % Last Modified by GUIDE v2.5 18-Jun-2018 12:49:35
 
 % Begin initialization code - DO NOT EDIT
@@ -64,6 +64,11 @@ set(handles.tabCalculator,'visible','off');
 set(handles.tabMonthFilter,'visible','off');
 set(handles.tabUpdate,'visible','off');
 
+global firstLogin;
+
+firstLogin = false;
+
+
 % UIWAIT makes AQIForecast wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
@@ -89,7 +94,7 @@ set(handles.tabFCast,'visible','off');
 set(handles.tabCalculator,'visible','off');
 set(handles.tabMonthFilter,'visible','off');
 set(handles.tabUpdate,'visible','off');
-
+set(handles.login,'visible','off');
 
 % --- Executes on button press in tabForecast.
 function tabForecast_Callback(hObject, eventdata, handles)
@@ -101,6 +106,7 @@ set(handles.tabFCast,'visible','on');
 set(handles.tabCalculator,'visible','off');
 set(handles.tabMonthFilter,'visible','off');
 set(handles.tabUpdate,'visible','off');
+set(handles.login,'visible','off');
 
 % --- Executes on button press in tabFilterMonth.
 function tabFilterMonth_Callback(hObject, eventdata, handles)
@@ -113,6 +119,7 @@ set(handles.tabFCast,'visible','off');
 set(handles.tabCalculator,'visible','off');
 set(handles.tabMonthFilter,'visible','on');
 set(handles.tabUpdate,'visible','off');
+set(handles.login,'visible','off');
 
 [loadfilemonth, ~, ~, ~] = loadRealData();
 yearMonth = [loadfilemonth(3,:);
@@ -127,6 +134,7 @@ set(handles.selectMonth,'string',dateInput);
 
 % --- Executes on button press in tabUpdateData.
 function tabUpdateData_Callback(hObject, eventdata, handles)
+global firstLogin;
 % hObject    handle to tabUpdateData (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -135,15 +143,28 @@ set(handles.tabFCast,'visible','off');
 set(handles.tabCalculator,'visible','off');
 set(handles.tabMonthFilter,'visible','off');
 set(handles.tabUpdate,'visible','on');
+set(handles.login,'visible','off');
 
 [dateData, temp, rain, aqi] = loadRealData();
-% n = length(dateData);
-% o = [];
-% for i=1 :n
-%     o=[o;dateData(1,i)+"/"+dateData(2,i)+"/"+dateData(3,i)];
-% end
-% % disp(cellstr(o));
-% oo = cellstr(o);
+
+if firstLogin  == false
+    set(handles.edit6,'enable','off');
+    set(handles.edit7,'enable','off');
+    set(handles.edit8,'enable','off');
+    set(handles.logout,'enable','off');
+    set(handles.admin,'enable','on');
+    set(handles.UpdateData,'enable','off');
+    
+else
+    set(handles.edit6,'enable','on');
+    set(handles.edit7,'enable','on');
+    set(handles.edit8,'enable','on');
+    set(handles.logout,'enable','on');
+    set(handles.UpdateData,'enable','on');
+end
+
+
+
 
 day = dateData(1,:);
 month = dateData(2,:);
@@ -175,6 +196,7 @@ set(handles.tabFCast,'visible','off');
 set(handles.tabCalculator,'visible','on');
 set(handles.tabMonthFilter,'visible','off');
 set(handles.tabUpdate,'visible','off');
+set(handles.login,'visible','off');
 
 function searchDay_Callback(hObject, eventdata, handles)
 % hObject    handle to searchDay (see GCBO)
@@ -704,6 +726,7 @@ end
 
 % --- Executes when entered data in editable cell(s) in uitable1.
 function uitable1_CellEditCallback(hObject, eventdata, handles)
+
 % hObject    handle to uitable1 (see GCBO)
 % eventdata  structure with the following fields (see MATLAB.UI.CONTROL.TABLE)
 %	Indices: row and column indices of the cell(s) edited
@@ -712,3 +735,112 @@ function uitable1_CellEditCallback(hObject, eventdata, handles)
 %	NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
 %	Error: error string when failed to convert EditData to appropriate value for Data
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in admin.
+function admin_Callback(hObject, eventdata, handles)
+set(handles.login,'visible','on');
+
+
+
+% --- Executes on button press in pushbutton13.
+function pushbutton13_Callback(hObject, eventdata, handles)
+global firstLogin;
+
+password = get(handles.edit14,'String');
+p = '123';
+compare = strcmp(password,p);
+if compare == 1
+    msgbox('OK');
+    firstLogin = true;
+    set(handles.login,'visible','off');
+    tabUpdateData_Callback(hObject, eventdata, handles);
+    set(handles.admin,'enable','off');
+else
+    msgbox('Wrong PassWord');
+end
+
+function edit13_Callback(hObject, eventdata, handles)
+% hObject    handle to edit13 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit13 as text
+%        str2double(get(hObject,'String')) returns contents of edit13 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit13_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit13 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function edit14_Callback(hObject, eventdata, handles)
+% hObject    handle to edit14 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit14 as text
+%        str2double(get(hObject,'String')) returns contents of edit14 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit14_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit14 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in logout.
+function logout_Callback(hObject, eventdata, handles)
+global firstLogin;
+firstLogin = false;
+tabUpdateData_Callback(hObject, eventdata, handles);
+set(handles.edit13,'String','');
+set(handles.edit14,'String','');
+
+% --- Executes on button press in exit.
+function exit_Callback(hObject, eventdata, handles)
+set(handles.login,'visible','off');
+
+
+% --- Executes when selected cell(s) is changed in uitable1.
+function uitable1_CellSelectionCallback(hObject, eventdata, handles)
+% if ~isempty(eventdata.Indices)&&~isempty(data)
+%     disp('aa');
+% end
+[DateData, temp, rain, aqi] = loadRealData();
+if ~isempty(eventdata.Indices)
+    handles.currentCell=eventdata.Indices;
+    guidata(hObject,handles);
+    Indices=handles.currentCell;
+    data=get(handles.uitable1,'Data');
+    data=data(Indices(1));
+    sliptDate = split(data,"/");
+    datetime = [str2double(sliptDate(1));str2double(sliptDate(2));str2double(sliptDate(3))];
+    [~, n1] = size(DateData);
+    for i=1:n1
+        if isequal(datetime,DateData(1:3,i))   
+            day = [DateData(2,i)+"/"+DateData(1,i)+"/"+DateData(3,i)];
+            dateInput = datestr(day,1);
+            set(handles.edit5,'string',dateInput);
+            set(handles.edit6,'string',temp(i));
+            set(handles.edit7,'string',rain(i));
+            set(handles.edit8,'string',aqi(i));
+        end
+    end
+end
