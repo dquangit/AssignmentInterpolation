@@ -423,10 +423,6 @@ uicalendar('Weekend', [1 0 0 0 0 0 1], ...
 
 
 
-
-
-
-
 function edit5_Callback(hObject, eventdata, handles)
 % hObject    handle to edit5 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -434,8 +430,6 @@ function edit5_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit5 as text
 %        str2double(get(hObject,'String')) returns contents of edit5 as a double
-[DateData, temp, rain, aqi] = loadRealData();
-disp(get(handles.edit5,'string'));
 
 
 % --- Executes during object creation, after setting all properties.
@@ -600,7 +594,6 @@ if update
     insertData(dateInput, tempInput, rainInput, aqiInput);
     msgbox('Update Successful');
     tabUpdateData_Callback(hObject, eventdata, handles);
-    clear_Callback(hObject, eventdata, handles);
 end
 
 
@@ -871,7 +864,7 @@ function delete_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global variable;
-
+disp(variable);
 if variable == 0
    msgbox('Please, choose row to delete!');
 else
@@ -882,13 +875,13 @@ else
         case 'Yes'
         msgbox('Seccess');
         deleteDataAtIndex(variable);
-        variable = 0;
         case 'Cancel'
     
     end
    
 end
-
+global variable;
+variable = 0;
 tabUpdateData_Callback(hObject, eventdata, handles);
 clear_Callback(hObject, eventdata, handles);
 
@@ -904,12 +897,9 @@ set(handles.edit8,'String','');
 % --- Executes on button press in update.
 function update_Callback(hObject, eventdata, handles)
 global variable;
-[DateData, temp, rain, aqi] = loadRealData();
-n = length(DateData);
+disp(variable);
 if variable == 0
    msgbox('Please, choose row to delete!');
 else
-    for i = 1:n
-        
-    end
+    
 end
