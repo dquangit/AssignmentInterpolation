@@ -1,12 +1,13 @@
-function deleteDataAtIndex(index)
+function UpdateData(index,temp,rain,aqi)
     dataPath;
-    [date, temp, rain, aqi] = loadRealData();
-    if index >= 0 && index <= length(aqi)
-        temp(index) = [];
-        rain(index) = [];
-        aqi(index) = [];
-        date(:, index) = [];
-        save(date, temp, rain, aqi);
+    [date, tempData, rainData, aqiData] = loadRealData();
+    if index >= 0 && index <= length(aqiData)
+        disp("@@@");
+        disp(index);
+        tempData(index) = temp;
+        rainData(index) = rain;
+        aqiData(index) = aqi;
+        save(date, tempData, rainData, aqiData);
     end    
 end
 

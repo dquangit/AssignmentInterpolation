@@ -22,7 +22,7 @@ function varargout = AQIForecast(varargin)
 
 % Edit the above text to modify the response to help AQIForecast
 
-% Last Modified by GUIDE v2.5 04-Jul-2018 19:00:18
+% Last Modified by GUIDE v2.5 04-Jul-2018 20:08:40
 % Last Modified by GUIDE v2.5 18-Jun-2018 12:49:35
 
 % Begin initialization code - DO NOT EDIT
@@ -149,9 +149,9 @@ set(handles.login,'visible','off');
 [dateData, temp, rain, aqi] = loadRealData();
 
 if firstLogin  == false
-    set(handles.edit6,'enable','off');
-    set(handles.edit7,'enable','off');
-    set(handles.edit8,'enable','off');
+    set(handles.tempUpdate,'enable','off');
+    set(handles.rainUpdate,'enable','off');
+    set(handles.aqiUpdate,'enable','off');
     set(handles.logout,'enable','off');
     set(handles.admin,'enable','on');
     set(handles.UpdateData,'enable','off');
@@ -159,9 +159,9 @@ if firstLogin  == false
     set(handles.update,'enable','off');
     
 else
-    set(handles.edit6,'enable','on');
-    set(handles.edit7,'enable','on');
-    set(handles.edit8,'enable','on');
+    set(handles.tempUpdate,'enable','on');
+    set(handles.rainUpdate,'enable','on');
+    set(handles.aqiUpdate,'enable','on');
     set(handles.logout,'enable','on');
     set(handles.UpdateData,'enable','on');
     set(handles.delete,'enable','on');
@@ -416,13 +416,38 @@ function selectUpdateDay_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+% uicalendar('Weekend', [1 0 0 0 0 0 1], ...  
+% 'SelectionType', 1, ...  
+% 'DestinationUI',handles.edit5);
+
 uicalendar('Weekend', [1 0 0 0 0 0 1], ...  
-'SelectionType', 1, ...  
-'DestinationUI',handles.edit5);
+    'SelectionType', 1, ...  
+    'DestinationUI', {handles.edit5, 'String'});
+    waitfor(handles.edit5, 'String');
+    getDate(handles);
+    
+function getDate(handles)
+global variable;
+[DateData, temp, rain, aqi] = loadRealData();
+n = length(DateData);
+day = get(handles.edit5,'string');
+formatIn = 'dd/mm/yyyy';
+dateInput = datestr(day,formatIn);
+dateInput = split(dateInput,'/');
+day= str2double(dateInput(1));
+month= str2double(dateInput(2));
+year= str2double(dateInput(3));
+dateInput = [day;month;year];
 
-
-
-
+for index = 1 : n
+    if isequal(dateInput, DateData(1:3,index))
+        set(handles.tempUpdate,'string',temp(index));
+        set(handles.rainUpdate,'string',rain(index));
+        set(handles.aqiUpdate,'string',aqi(index));
+        disp(index);
+        variable = index;
+    end
+end
 
 
 
@@ -434,8 +459,7 @@ function edit5_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit5 as text
 %        str2double(get(hObject,'String')) returns contents of edit5 as a double
-[DateData, temp, rain, aqi] = loadRealData();
-disp(get(handles.edit5,'string'));
+
 
 
 % --- Executes during object creation, after setting all properties.
@@ -452,18 +476,18 @@ end
 
 
 
-function edit6_Callback(hObject, eventdata, handles)
-% hObject    handle to edit6 (see GCBO)
+function tempUpdate_Callback(hObject, eventdata, handles)
+% hObject    handle to tempUpdate (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit6 as text
-%        str2double(get(hObject,'String')) returns contents of edit6 as a double
+% Hints: get(hObject,'String') returns contents of tempUpdate as text
+%        str2double(get(hObject,'String')) returns contents of tempUpdate as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit6_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit6 (see GCBO)
+function tempUpdate_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to tempUpdate (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -475,18 +499,18 @@ end
 
 
 
-function edit7_Callback(hObject, eventdata, handles)
-% hObject    handle to edit7 (see GCBO)
+function rainUpdate_Callback(hObject, eventdata, handles)
+% hObject    handle to rainUpdate (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit7 as text
-%        str2double(get(hObject,'String')) returns contents of edit7 as a double
+% Hints: get(hObject,'String') returns contents of rainUpdate as text
+%        str2double(get(hObject,'String')) returns contents of rainUpdate as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit7_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit7 (see GCBO)
+function rainUpdate_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to rainUpdate (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -498,18 +522,18 @@ end
 
 
 
-function edit8_Callback(hObject, eventdata, handles)
-% hObject    handle to edit8 (see GCBO)
+function aqiUpdate_Callback(hObject, eventdata, handles)
+% hObject    handle to aqiUpdate (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit8 as text
-%        str2double(get(hObject,'String')) returns contents of edit8 as a double
+% Hints: get(hObject,'String') returns contents of aqiUpdate as text
+%        str2double(get(hObject,'String')) returns contents of aqiUpdate as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit8_CreateFcn(hObject, eventdata, ~)
-% hObject    handle to edit8 (see GCBO)
+function aqiUpdate_CreateFcn(hObject, eventdata, ~)
+% hObject    handle to aqiUpdate (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -528,9 +552,9 @@ function UpdateData_Callback(hObject, eventdata, handles)
 dataPath;
 dateData = getDateData();
 invalidateData = false;
-aqiInput = get(handles.edit8, 'String');
-tempInput = get(handles.edit6, 'String');
-rainInput = get(handles.edit7, 'String');
+aqiInput = get(handles.aqiUpdate, 'String');
+tempInput = get(handles.tempUpdate, 'String');
+rainInput = get(handles.rainUpdate, 'String');
 day = get(handles.edit5,'string');
 formatIn = 'dd/mm/yyyy';
 invalidateDate = false;
@@ -856,9 +880,9 @@ if ~isempty(eventdata.Indices)
             day = [DateData(2,i)+"/"+DateData(1,i)+"/"+DateData(3,i)];
             dateInput = datestr(day,1);
             set(handles.edit5,'string',dateInput);
-            set(handles.edit6,'string',temp(i));
-            set(handles.edit7,'string',rain(i));
-            set(handles.edit8,'string',aqi(i));
+            set(handles.tempUpdate,'string',temp(i));
+            set(handles.rainUpdate,'string',rain(i));
+            set(handles.aqiUpdate,'string',aqi(i));
             variable = i;
         end
     end
@@ -896,9 +920,9 @@ clear_Callback(hObject, eventdata, handles);
 % --- Executes on button press in clear.
 function clear_Callback(hObject, eventdata, handles)
 set(handles.edit5,'String','');
-set(handles.edit6,'String','');
-set(handles.edit7,'String','');
-set(handles.edit8,'String','');
+set(handles.tempUpdate,'String','');
+set(handles.rainUpdate,'String','');
+set(handles.aqiUpdate,'String','');
 
 
 % --- Executes on button press in update.
@@ -906,10 +930,55 @@ function update_Callback(hObject, eventdata, handles)
 global variable;
 [DateData, temp, rain, aqi] = loadRealData();
 n = length(DateData);
+dataPath;
+dateData = getDateData();
+disp(variable);
 if variable == 0
    msgbox('Please, choose row to delete!');
 else
-    for i = 1:n
+    [~, tempData, rainData, aqiData] = loadRealData();
+    aqiInput = get(handles.aqiUpdate, 'String');
+    tempInput = get(handles.tempUpdate, 'String');
+    rainInput = get(handles.rainUpdate, 'String');
+    disp(aqiInput);
+    disp(tempInput);
+    disp(rainInput);
+    invalidateData = false;
+    if (isempty(aqiInput) || isempty(tempInput) || isempty(rainInput)) 
+        invalidateData = true;
+    end
+    
+    aqiInput = str2double(aqiInput);
+    tempInput = str2double(tempInput);
+    rainInput = str2double(rainInput);
+ 
+    if (invalidateData)
+        msgbox('Invalidated data');
+    else
         
+        aqiInterpolation = griddata(tempData, rainData, aqiData, tempInput, rainInput);
+        disp(aqiInput);
+        disp(aqiInput - aqiInterpolation);
+        
+    if (abs(aqiInput - aqiInterpolation) > 25)
+        answer = questdlg('Inputs are difference too much from interpolation result', ...
+            'Do you want to continue update?', ...
+            'Yes','No thank you', 'No thank you');
+        if (answer == 'Yes') 
+            update = true;
+        end
+    else 
+        update = true;
+    end
+    end
+
+    if update
+%         insertData(dateInput, tempInput, rainInput, aqiInput);
+%         tempData(variable) = tempInput;
+        a = variable;
+        UpdateData(a,tempInput,rainInput,aqiInput);
+        msgbox('Update Successful');
+        tabUpdateData_Callback(hObject, eventdata, handles);
+        clear_Callback(hObject, eventdata, handles);
     end
 end
