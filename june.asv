@@ -5,12 +5,9 @@ aqiJune = [100 83.61 68.15 96.01 31.92 58.09 129.5 154.41 504.41 335.71 264.1 10
 [~, temp, rain, aqi] = loadRealData;
 juneSize = length(aqiJune);
 result = zeros(size(aqiJune));
-x  = [temp; rain];
-[x, aqi] = removeDuplicatedData(x, aqi);
-temp = x(1,:);
-rain = x(2,:);
+[]
 for index = 1 : juneSize
-    result(index) = shepard(temp, rain, aqi, tempJune(index), rainJune(index));
+    result(index) = griddata(temp, rain, aqi, tempJune(index), rainJune(index));
 end
 
 bar(result);

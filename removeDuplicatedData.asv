@@ -8,8 +8,8 @@ function [outputArg1,outputArg2] = removeDuplicatedData(input, target)
     inputTable = table(inversedInput,'RowNames', inversedTargetCell);
     uniqueTable = unique(inputTable);
     inversedTargetOut = uniqueTable.Properties.RowNames;
-    targetOut = str2double(inversedTargetOut);
+    targetOut = str2num()
     outputArg1 = table2array(uniqueTable)';
-    outputArg2 = targetOut';
+    outputArg2 = inversedTargetOut';
 end
 
