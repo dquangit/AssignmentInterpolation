@@ -9,11 +9,12 @@ x  = [temp; rain];
 [x, aqi] = removeDuplicatedData(x, aqi);
 temp = x(1,:);
 rain = x(2,:);
+
 for index = 1 : juneSize
-    result(index) = shepard(temp, rain, aqi, tempJune(index), rainJune(index));
+    result(index) = shepard_2(temp, rain, aqi, tempJune(index), rainJune(index));
 end
 
-bar(result);
+bar(aqiJune);
 hold on;
-plot(aqiJune);
+plot(result);
 hold off;

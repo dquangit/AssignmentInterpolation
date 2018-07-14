@@ -168,9 +168,6 @@ else
     set(handles.update,'enable','on');
 end
 
-
-
-
 day = dateData(1,:);
 month = dateData(2,:);
 year = dateData(3,:);
@@ -291,7 +288,7 @@ function calExecute_Callback(hObject, eventdata, handles)
     tempInput = get(handles.calTemp,'String');
     rainInput = get(handles.calRain,'String'); 
     [~, tempData, rainData, aqiData] = loadRealData();
-    result = calculateAqi(tempData, rainData, aqiData, tempInput, rainInput);
+    result = calculateAqi(tempData, rainData, aqiData, str2double(tempInput), str2double(rainInput));
     if result == -1 
         msgbox('Invalidate input');
     else
@@ -354,13 +351,13 @@ function forecastDay(handles)
         week = selectedDate : nextWeekSelectedDay;
         weekLength = length(week);
         aqiMatrix = zeros([1 weekLength]);
-        rainMatrix = getRainByDate(week(end));
-        tempMatrix = getTempByDate(week(end));
+        weekend = week(end);
+        rainMatrix = getRainByDate(weekend);
+        tempMatrix = getTempByDate(weekend);
         rainMatrix = rainMatrix(end - weekLength + 1 : end);
         tempMatrix = tempMatrix(end - weekLength + 1 : end);
-        for index = 1 : weekLength 
-         
-            aqiMatrix(index) = griddata(tempData, rainData, aqiData, tempMatrix(index), rainMatrix(index));
+        for index = 1 : weekLength
+            aqiMatrix(index) = calculateAqi(tempData, rainData, aqiData, tempMatrix(index), rainMatrix(index));
         end
         set(handles.forecastTemp, 'String', tempMatrix(1));
         set(handles.forecastRain, 'String', rainMatrix(1));
@@ -605,7 +602,7 @@ elseif (invalidateData)
     msgbox('Invalidated data');
 else
     [~, tempData, rainData, aqiData] = loadRealData();
-    aqiInterpolation = griddata(tempData, rainData, aqiData, tempInput, rainInput);
+    aqiInterpolation = calculateAqi(tempData, rainData, aqiData, tempInput, rainInput);
     disp(aqiInput);
     disp(aqiInput - aqiInterpolation);
     if (abs(aqiInput - aqiInterpolation) > 25)
@@ -956,7 +953,7 @@ else
         msgbox('Invalidated data');
     else
         
-        aqiInterpolation = griddata(tempData, rainData, aqiData, tempInput, rainInput);
+        aqiInterpolation = calculateAqi(tempData, rainData, aqiData, tempInput, rainInput);
         disp(aqiInput);
         disp(aqiInput - aqiInterpolation);
         

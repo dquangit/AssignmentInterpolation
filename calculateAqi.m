@@ -1,14 +1,17 @@
 function output = calculateAqi(tempData, rainData, aqiData, tempInput, rainInput)
-    if isempty(tempInput) && isempty(rainInput)
+    if isnan(tempInput) && isnan(rainInput)
         output = -1;
-    elseif isempty(tempInput)
+    elseif isnan(tempInput)
         [rainData, aqiData] = removeDuplicatedData(rainData, aqiData);
-        output = Lagrange(rainData, aqiData, str2double(rainInput));
-    elseif isempty(rainInput)
+        output = Lagrange(rainData, aqiData, rainInput);
+    elseif isnan(rainInput)
         [tempData, aqiData] = removeDuplicatedData(tempData, aqiData);
-        output = Lagrange(tempData, aqiData, str2double(tempInput));
+        output = Lagrange(tempData, aqiData, tempInput);
     else
-        output = griddata(tempData, rainData, aqiData, str2double(tempInput), str2double(rainInput));
+        [uniqueFactor, uniqueAqi] = removeDuplicatedData([tempData; rainData], aqiData);
+        uniqueTempData = uniqueFactor(1, :);
+        uniqueRainData = uniqueFactor(2, :);
+        output = shepard_2(uniqueTempData, uniqueRainData, uniqueAqi, tempInput, rainInput);
     end
 end
 

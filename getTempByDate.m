@@ -68,8 +68,11 @@ function ouput = interpolationTempByDate(dateData, tempData, inputDate)
     result = zeros([1 (interpolationLenght + 2)]);
     result(1) =  tempData(end - 1);
     result(2) = tempData(end);
+    [xFactor, y] = removeDuplicatedData([x1;x2], y);
+    x1 = xFactor(1, :);
+    x2 = xFactor(2, :);
     for index = 3 : interpolationLenght + 2
-        out = griddata(x1, x2, y, result(index - 2), result(index - 1));
+        out = shepard_2(x1, x2, y, result(index - 2), result(index - 1));
         result(index) = out;
     end
     ouput = result(3 : end);

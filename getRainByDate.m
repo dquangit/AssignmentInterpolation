@@ -67,8 +67,14 @@ function output = interpolationRainByDate(dateData, rainData, inputDate)
     result = zeros([1 (interpolationLenght + 2)]);
     result(1) =  rainData(end - 1);
     result(2) = rainData(end);
+    [xFactor, y] = removeDuplicatedData([x1;x2], y);
+    x1 = xFactor(1, :);
+    x2 = xFactor(2, :);
     for index = 3 : interpolationLenght + 2
-        out = griddata(x1, x2, y, result(index - 2), result(index - 1));
+        out = shepard_2(x1, x2, y, result(index - 2), result(index - 1));
+        disp('Shit');
+        disp(out);
+        disp('---');
         result(index) = out;
     end
     output = result(3 : end);
