@@ -72,9 +72,6 @@ function output = interpolationRainByDate(dateData, rainData, inputDate)
     x2 = xFactor(2, :);
     for index = 3 : interpolationLenght + 2
         out = shepard_2(x1, x2, y, result(index - 2), result(index - 1));
-        disp('Shit');
-        disp(out);
-        disp('---');
         result(index) = out;
     end
     output = result(3 : end);
