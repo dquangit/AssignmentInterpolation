@@ -1,15 +1,16 @@
 % TestMatrix = zeros([1 190]);
 % Result = zeros(size(TestMatrix));
-p = 2;
+p = 1;
 
 [dateData, tempData, rainData, aqiData] = loadRealData();
 
 dateTime = [11;2017];
 
+% disp(tempData(60:277));
 tempData1 = tempData(60:277);
 rainData1 = rainData(60:277);
 aqiData1  = aqiData(60:277);
-
+% dateData = dateData();
 [~, n] = size(aqiData);
 date=[];
 temp = [];
@@ -48,7 +49,7 @@ while (i<=length(tempData1))
     end
     i = i + 1;
 end
-% for i = 1 : n18
+% for i = 1 : n1
 % %     x = index/10;
 % %     TestMatrix(index) = x;
 %     result(i) =  shepard(tempData, aqiData, temp(i), p);
@@ -68,6 +69,6 @@ plot ( result, 'r-', 'Linewidth', 4 );
 % plot ( TestMatrix, Result, 'k.', 'Markersize', 20 );
 xlabel ( '<--- X --->' );
 ylabel ( '<--- Y --->' );
-title ( 'Shepard interpolation with p = 2' );
+title ( 'Shepard interpolation with p = 10' );
 grid on
 hold off
