@@ -22,7 +22,7 @@ function varargout = AQIForecast(varargin)
 
 % Edit the above text to modify the response to help AQIForecast
 
-% Last Modified by GUIDE v2.5 04-Jul-2018 20:08:40
+% Last Modified by GUIDE v2.5 19-Jul-2018 19:16:46
 % Last Modified by GUIDE v2.5 18-Jun-2018 12:49:35
 
 % Begin initialization code - DO NOT EDIT
@@ -268,18 +268,20 @@ function searchDay(handles)
                 aqiMatrix(index) = NaN;
             end
         end
-        axes(handles.searchAxes);
+        axes(handles.searchAqiAxes);
         bar(weekMatrix, aqiMatrix, 'b');
         for i1=1:numel(aqiMatrix)
             text(weekMatrix(i1),aqiMatrix(i1),num2str(aqiMatrix(i1),'%0.2f'),...
                'HorizontalAlignment','center',...
                'VerticalAlignment','bottom')
         end
-        hold on;
-        plot(weekMatrix, tempMatrix, 'r', 'Linewidth', 2);
-        hold on;
-        plot(weekMatrix, rainMatrix, 'g', 'Linewidth', 2);
+        
         hold off;
+        axes(handles.searchTempAxes);
+        plot(weekMatrix, tempMatrix, 'r', 'Linewidth', 2);
+        axes(handles.searchRainAxes);
+        plot(weekMatrix, rainMatrix, 'g', 'Linewidth', 2);
+        
     end
         
         
@@ -368,20 +370,21 @@ function forecastDay(handles)
         set(handles.forecastEvaluate, 'String', evaluate);
         set(handles.forecastWarning, 'String', warning);
         
-        axes(handles.forecastAxes);
+        axes(handles.forecastAqiAxes);
         bar(week, aqiMatrix, 'b');
         for i1=1:numel(aqiMatrix)
             text(week(i1),aqiMatrix(i1),num2str(aqiMatrix(i1),'%0.2f'),...
                'HorizontalAlignment','center',...
                'VerticalAlignment','bottom')
         end
-        hold on;
-        plot(week, rainMatrix, 'g','Linewidth', 2);
+        hold off;
         
-        hold on;
+        axes(handles.forecastRainAxes);
+        plot(week, rainMatrix, 'g','Linewidth', 2);
+        axes(handles.forecastTempAxes);
         plot(week, tempMatrix, 'r', 'Linewidth', 2);
         
-        hold off;
+        
 %     end
 
 
