@@ -58,8 +58,11 @@ handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
-set(handles.tabSearchData,'visible','on');
-set(handles.tabFCast,'visible','off');
+firstLoad(handles);
+
+function firstLoad(handles)
+set(handles.tabSearchData,'visible','off');
+set(handles.tabFCast,'visible','on');
 set(handles.tabCalculator,'visible','off');
 set(handles.tabMonthFilter,'visible','off');
 set(handles.tabUpdate,'visible','off');
@@ -68,6 +71,11 @@ global firstLogin;
 global variable;
 variable = 0;
 firstLogin = false;
+
+formatOut = 'dd-mmm-yyyy';
+now = datetime('now');
+set(handles.forecastDay, 'string', datestr(now, formatOut));
+forecastDay(handles);
 
 
 % UIWAIT makes AQIForecast wait for user response (see UIRESUME)
@@ -108,6 +116,11 @@ set(handles.tabCalculator,'visible','off');
 set(handles.tabMonthFilter,'visible','off');
 set(handles.tabUpdate,'visible','off');
 set(handles.login,'visible','off');
+
+formatOut = 'dd-mmm-yyyy';
+now = datetime('now');
+set(handles.forecastDay, 'string', datestr(now, formatOut));
+forecastSelectedDay(handles, now);
 
 % --- Executes on button press in tabFilterMonth.
 function tabFilterMonth_Callback(hObject, eventdata, handles)
@@ -341,16 +354,19 @@ function selectForeCastDayButton_Callback(hObject, eventdata, handles)
     forecastDay(handles);
 
 function forecastDay(handles)
-    [~, tempData, rainData, aqiData] = loadRealData();
     stringData = get(handles.forecastDay, 'String');
     selectedDate = datetime(stringData);
-    now = datetime('now');
+    now = datetime('today');
     currentDate = datetime(year(now), month(now), day(now));
 %     if selectedDate < currentDate
 %         msgbox('Please select current day or another day in the future.');
 %     else
-        nextWeekSelectedDay = selectedDate + caldays(6);
-        week = selectedDate : nextWeekSelectedDay;
+    forecastSelectedDay(handles, selectedDate);
+       
+function forecastSelectedDay(handles, date)
+        [~, tempData, rainData, aqiData] = loadRealData();
+        nextWeekSelectedDay = date + caldays(6);
+        week = date : nextWeekSelectedDay;
         weekLength = length(week);
         aqiMatrix = zeros([1 weekLength]);
         weekend = week(end);
@@ -631,7 +647,6 @@ end
 
 % --- Executes on selection change in selectMonth.
 function selectMonth_Callback(hObject, eventdata, handles)
-
 [loadfilemonth, ~, ~, loadfileAqi] = loadRealData();
 n = length(loadfileAqi);
 value = get(handles.selectMonth,'value');

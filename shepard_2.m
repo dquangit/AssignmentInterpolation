@@ -1,5 +1,5 @@
-function out = shepard_2(X, Y, Z, x, y,p)
-%     p = 2;
+function out = shepard_2(X, Y, Z, x, y)
+    p = 2;
     h = zeros(size(X));
     lengthInput = length(X);    
     duplicate = false;
