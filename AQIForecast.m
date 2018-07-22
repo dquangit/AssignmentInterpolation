@@ -58,9 +58,9 @@ handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
-firstLoad(handles);
+firstLoad(hObject, eventdata, handles);
 
-function firstLoad(handles)
+function firstLoad(hObject, eventdata, handles)
 set(handles.tabSearchData,'visible','off');
 set(handles.tabFCast,'visible','on');
 set(handles.tabCalculator,'visible','off');
@@ -144,6 +144,8 @@ monthYear = [y(2,:);
 str = [monthYear(1,:)+"/"+monthYear(2,:)];
 dateInput = cellstr(str);
 set(handles.selectMonth,'string',dateInput);
+
+selectMonth_Callback(hObject, eventdata, handles);
 
 
 % --- Executes on button press in tabUpdateData.
