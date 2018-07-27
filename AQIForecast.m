@@ -22,7 +22,7 @@ function varargout = AQIForecast(varargin)
 
 % Edit the above text to modify the response to help AQIForecast
 
-% Last Modified by GUIDE v2.5 19-Jul-2018 19:16:46
+% Last Modified by GUIDE v2.5 28-Jul-2018 09:55:02
 % Last Modified by GUIDE v2.5 18-Jun-2018 12:49:35
 
 % Begin initialization code - DO NOT EDIT
@@ -77,6 +77,10 @@ now = datetime('now');
 set(handles.forecastDay, 'string', datestr(now, formatOut));
 forecastDay(handles);
 
+formatOut = 'dd-mmm-yyyy';
+now = datetime('now');
+set(handles.updateDay, 'string', datestr(now, formatOut));
+
 
 % UIWAIT makes AQIForecast wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -116,11 +120,6 @@ set(handles.tabCalculator,'visible','off');
 set(handles.tabMonthFilter,'visible','off');
 set(handles.tabUpdate,'visible','off');
 set(handles.login,'visible','off');
-
-formatOut = 'dd-mmm-yyyy';
-now = datetime('now');
-set(handles.forecastDay, 'string', datestr(now, formatOut));
-forecastSelectedDay(handles, now);
 
 % --- Executes on button press in tabFilterMonth.
 function tabFilterMonth_Callback(hObject, eventdata, handles)
@@ -200,8 +199,6 @@ aqiInput = cellstr(str3);
 
 datos = [dateInput' tempInput' rainInput' aqiInput'];
 set(handles.uitable1,'data',datos);
-
-
 
 % --- Executes on button press in tabCal.
 function tabCal_Callback(hObject, eventdata, handles)
@@ -360,10 +357,11 @@ function forecastDay(handles)
     selectedDate = datetime(stringData);
     now = datetime('today');
     currentDate = datetime(year(now), month(now), day(now));
-%     if selectedDate < currentDate
-%         msgbox('Please select current day or another day in the future.');
-%     else
-    forecastSelectedDay(handles, selectedDate);
+    if selectedDate < currentDate
+        msgbox('Please select current day or another day in the future.');
+    else
+        forecastSelectedDay(handles, selectedDate);
+    end
        
 function forecastSelectedDay(handles, date)
         [~, tempData, rainData, aqiData] = loadRealData();
@@ -436,19 +434,19 @@ function selectUpdateDay_Callback(hObject, eventdata, handles)
 
 % uicalendar('Weekend', [1 0 0 0 0 0 1], ...  
 % 'SelectionType', 1, ...  
-% 'DestinationUI',handles.edit5);
+% 'DestinationUI',handles.updateDay);
 
 uicalendar('Weekend', [1 0 0 0 0 0 1], ...  
     'SelectionType', 1, ...  
-    'DestinationUI', {handles.edit5, 'String'});
-    waitfor(handles.edit5, 'String');
+    'DestinationUI', {handles.updateDay, 'String'});
+    waitfor(handles.updateDay, 'String');
     getDate(handles);
     
 function getDate(handles)
 global variable;
 [DateData, temp, rain, aqi] = loadRealData();
 n = length(DateData);
-day = get(handles.edit5,'string');
+day = get(handles.updateDay,'string');
 formatIn = 'dd/mm/yyyy';
 dateInput = datestr(day,formatIn);
 dateInput = split(dateInput,'/');
@@ -470,19 +468,19 @@ end
 
 
 
-function edit5_Callback(hObject, eventdata, handles)
-% hObject    handle to edit5 (see GCBO)
+function updateDay_Callback(hObject, eventdata, handles)
+% hObject    handle to updateDay (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit5 as text
-%        str2double(get(hObject,'String')) returns contents of edit5 as a double
+% Hints: get(hObject,'String') returns contents of updateDay as text
+%        str2double(get(hObject,'String')) returns contents of updateDay as a double
 
 
 
 % --- Executes during object creation, after setting all properties.
-function edit5_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit5 (see GCBO)
+function updateDay_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to updateDay (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -573,15 +571,15 @@ invalidateData = false;
 aqiInput = get(handles.aqiUpdate, 'String');
 tempInput = get(handles.tempUpdate, 'String');
 rainInput = get(handles.rainUpdate, 'String');
-day = get(handles.edit5,'string');
+day = get(handles.updateDay,'string');
 formatIn = 'dd/mm/yyyy';
 invalidateDate = false;
 dateInput = datestr(day,formatIn);
 if (length(day) >= 1)
     dateInput = split(dateInput,'/');
-    day= str2double(dateInput(1));
-    month= str2double(dateInput(2));
-    year= str2double(dateInput(3));
+    day = str2double(dateInput(1));
+    month = str2double(dateInput(2));
+    year = str2double(dateInput(3));
     dateInput = [day;month;year];
     if (~isdatetime(datetime(year, month, day)) || datetime(year, month, day) > datetime('now'))
     invalidateDate = true;
@@ -896,7 +894,7 @@ if ~isempty(eventdata.Indices)
         if isequal(datetime,DateData(1:3,i))   
             day = [DateData(2,i)+"/"+DateData(1,i)+"/"+DateData(3,i)];
             dateInput = datestr(day,1);
-            set(handles.edit5,'string',dateInput);
+            set(handles.updateDay,'string',dateInput);
             set(handles.tempUpdate,'string',temp(i));
             set(handles.rainUpdate,'string',rain(i));
             set(handles.aqiUpdate,'string',aqi(i));
@@ -936,7 +934,7 @@ clear_Callback(hObject, eventdata, handles);
 
 % --- Executes on button press in clear.
 function clear_Callback(hObject, eventdata, handles)
-set(handles.edit5,'String','');
+set(handles.updateDay,'String','');
 set(handles.tempUpdate,'String','');
 set(handles.rainUpdate,'String','');
 set(handles.aqiUpdate,'String','');
@@ -945,38 +943,41 @@ set(handles.aqiUpdate,'String','');
 % --- Executes on button press in update.
 function update_Callback(hObject, eventdata, handles)
 global variable;
-[DateData, temp, rain, aqi] = loadRealData();
-n = length(DateData);
-dataPath;
-dateData = getDateData();
+update = false;
+[dateData, tempData, rainData, aqiData] = loadRealData();
+n = length(dateData);
 disp(variable);
 if variable == 0
    msgbox('Please, choose row to delete!');
 else
-    [~, tempData, rainData, aqiData] = loadRealData();
     aqiInput = get(handles.aqiUpdate, 'String');
     tempInput = get(handles.tempUpdate, 'String');
     rainInput = get(handles.rainUpdate, 'String');
-    disp(aqiInput);
-    disp(tempInput);
-    disp(rainInput);
-    invalidateData = false;
-    if (isempty(aqiInput) || isempty(tempInput) || isempty(rainInput)) 
-        invalidateData = true;
-    end
-    
     aqiInput = str2double(aqiInput);
     tempInput = str2double(tempInput);
     rainInput = str2double(rainInput);
+    invalidateData = false;
+    message = '';
+    if (isnan(aqiInput) || isnan(tempInput) || isnan(rainInput)) 
+        invalidateData = true;
+        message = 'Invalid data';
+    elseif (rainInput < 0)
+        invalidateData = true;
+        message = 'Amount of rain must be non-negative number';
+    elseif (aqiInput < 0)
+        invalidateData = true;
+        message = 'AQI must be non-negative number';
+    end
+
  
     if (invalidateData)
-        msgbox('Invalidated data');
+        msgbox(message);
     else
-        
         aqiInterpolation = calculateAqi(tempData, rainData, aqiData, tempInput, rainInput);
         disp(aqiInput);
         disp(aqiInput - aqiInterpolation);
-        
+    warning = false;
+    
     if (abs(aqiInput - aqiInterpolation) > 25)
         answer = questdlg('Inputs are difference too much from interpolation result', ...
             'Do you want to continue update?', ...
