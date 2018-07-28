@@ -1,0 +1,125 @@
+<deployment-project plugin="plugin.apptool" plugin-version="1.0">
+  <configuration build-checksum="3615230243" file="F:\assignment\AssignmentInterpolation\AQI Forecast.prj" location="F:\assignment\AssignmentInterpolation" name="AQI Forecast" target="target.mlapps" target-name="Package App">
+    <param.appname>AQI Forecast</param.appname>
+    <param.authnamewatermark>Van Quang, Ngoc Son</param.authnamewatermark>
+    <param.email />
+    <param.company />
+    <param.icon />
+    <param.icons />
+    <param.summary />
+    <param.description />
+    <param.screenshot />
+    <param.version>1.0</param.version>
+    <param.products.name />
+    <param.products.id />
+    <param.products.version />
+    <param.platforms />
+    <param.output>C:\Users\DQuang\Desktop</param.output>
+    <param.guid>0517d05b-ca73-4751-860b-f0011f5383d5</param.guid>
+    <unset>
+      <param.email />
+      <param.company />
+      <param.icon />
+      <param.icons />
+      <param.summary />
+      <param.description />
+      <param.screenshot />
+      <param.version />
+      <param.products.name />
+      <param.products.id />
+      <param.products.version />
+      <param.platforms />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}\AQIForecast.m</file>
+    </fileset.main>
+    <fileset.depfun>
+      <file>${PROJECT_ROOT}\AQIForecast.fig</file>
+      <file>${PROJECT_ROOT}\calculateAqi.m</file>
+      <file>${PROJECT_ROOT}\dataPath.m</file>
+      <file>${PROJECT_ROOT}\deleteDataAtIndex.m</file>
+      <file>${PROJECT_ROOT}\getAqi.m</file>
+      <file>${PROJECT_ROOT}\getAqiEvaluate.m</file>
+      <file>${PROJECT_ROOT}\getDateData.m</file>
+      <file>${PROJECT_ROOT}\getDatePosition.m</file>
+      <file>${PROJECT_ROOT}\getRain.m</file>
+      <file>${PROJECT_ROOT}\getRainByDate.m</file>
+      <file>${PROJECT_ROOT}\getTempByDate.m</file>
+      <file>${PROJECT_ROOT}\getTemperature.m</file>
+      <file>${PROJECT_ROOT}\insertData.m</file>
+      <file>${PROJECT_ROOT}\Lagrange.m</file>
+      <file>${PROJECT_ROOT}\loadForecastData.m</file>
+      <file>${PROJECT_ROOT}\loadInterpolationFactorData.m</file>
+      <file>${PROJECT_ROOT}\loadRealData.m</file>
+      <file>${PROJECT_ROOT}\removeDuplicatedData.m</file>
+      <file>${PROJECT_ROOT}\searchRealData.m</file>
+      <file>${PROJECT_ROOT}\shepard_2.m</file>
+      <file>${PROJECT_ROOT}\updateData.fig</file>
+      <file>${PROJECT_ROOT}\UpdateData.m</file>
+    </fileset.depfun>
+    <fileset.resources>
+      <file>${PROJECT_ROOT}\data</file>
+    </fileset.resources>
+    <fileset.package />
+    <build-deliverables>
+      <file location="C:\Users\DQuang" name="Desktop" optional="false">C:\Users\DQuang\Desktop</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>F:\matlab\matlab</root>
+      <toolboxes>
+        <toolbox name="fixedpoint" />
+        <toolbox name="matlabcoder" />
+        <toolbox name="matlabhdlcoder" />
+        <toolbox name="embeddedcoder" />
+        <toolbox name="gpucoder" />
+        <toolbox name="polyspacebugfinder" />
+      </toolboxes>
+      <toolbox>
+        <fixedpoint>
+          <enabled>true</enabled>
+        </fixedpoint>
+      </toolbox>
+      <toolbox>
+        <matlabcoder>
+          <enabled>true</enabled>
+        </matlabcoder>
+      </toolbox>
+      <toolbox>
+        <matlabhdlcoder>
+          <enabled>true</enabled>
+        </matlabhdlcoder>
+      </toolbox>
+      <toolbox>
+        <embeddedcoder>
+          <enabled>true</enabled>
+        </embeddedcoder>
+      </toolbox>
+      <toolbox>
+        <gpucoder>
+          <enabled>true</enabled>
+        </gpucoder>
+      </toolbox>
+      <toolbox>
+        <polyspacebugfinder>
+          <enabled>true</enabled>
+        </polyspacebugfinder>
+      </toolbox>
+    </matlab>
+    <platform>
+      <unix>false</unix>
+      <mac>false</mac>
+      <windows>true</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>6.1</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>win64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
