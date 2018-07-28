@@ -565,8 +565,8 @@ function UpdateData_Callback(hObject, eventdata, handles)
 % hObject    handle to UpdateData (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-dataPath;
-dateData = getDateData();
+[dateData, tempData, rainData, aqiData] = loadRealData();
+
 invalidateData = false;
 aqiInput = get(handles.aqiUpdate, 'String');
 tempInput = get(handles.tempUpdate, 'String');
@@ -590,9 +590,6 @@ if (isempty(day) || isempty(aqiInput) || isempty(tempInput) || isempty(rainInput
     invalidateData = true;
 end
 
-
-
-
 [~, n] = size(dateData);
 update = false;
 isDuplicated = false;
@@ -602,8 +599,6 @@ for index = 1 : n
         break;
     end
 end
-
-
 
 if (isempty(aqiInput) || isempty(tempInput) || isempty(rainInput))
     invalidateData = true;
@@ -620,19 +615,52 @@ elseif (isDuplicated)
 elseif (invalidateData)
     msgbox('Invalidated data');
 else
-    [~, tempData, rainData, aqiData] = loadRealData();
-    aqiInterpolation = calculateAqi(tempData, rainData, aqiData, tempInput, rainInput);
-    disp(aqiInput);
-    disp(aqiInput - aqiInterpolation);
-    if (abs(aqiInput - aqiInterpolation) > 25)
-        answer = questdlg('Inputs are difference too much from interpolation result', ...
-            'Do you want to continue update?', ...
-            'Yes','No thank you', 'No thank you');
-        if (answer == 'Yes') 
-            update = true;
+    aqiInput = get(handles.aqiUpdate, 'String');
+    tempInput = get(handles.tempUpdate, 'String');
+    rainInput = get(handles.rainUpdate, 'String');
+    aqiInput = str2double(aqiInput);
+    tempInput = str2double(tempInput);
+    rainInput = str2double(rainInput);
+    invalidateData = false;
+    message = '';
+    if (isnan(aqiInput) || isnan(tempInput) || isnan(rainInput)) 
+        invalidateData = true;
+        message = 'Invalid data';
+    elseif (rainInput < 0)
+        invalidateData = true;
+        message = 'Amount of rain must be non-negative number';
+    elseif (aqiInput < 0)
+        invalidateData = true;
+        message = 'AQI must be non-negative number';
+    elseif (tempInput > 60)
+        invalidateData = true;
+        message = 'Temperature is too high.';
+    end
+
+ 
+    if (invalidateData)
+        msgbox(message);
+    else
+        aqiInterpolation = calculateAqi(tempData, rainData, aqiData, tempInput, rainInput);
+        invalidTemp = (tempInput > max(tempData)) || (tempInput < min(tempData));
+        invalidRain = rainInput > max(rainData);
+        invalidAqi = abs(aqiInput - aqiInterpolation) > 25;
+        
+        if (invalidTemp) 
+            update = askUserContinueUpdate('Temperature input entered is outside the range of historical data.');
         end
-    else 
-        update = true;
+        
+        if (update)
+            if (invalidRain)
+                update = askUserContinueUpdate('Amount of rain input entered exceeds the range of historical data.');
+            end
+        end
+        
+        if (update)
+            if (invalidAqi)
+                update = askUserContinueUpdate('Inputs are difference too much from interpolation result');
+            end
+        end
     end
 end
 
@@ -967,27 +995,35 @@ else
     elseif (aqiInput < 0)
         invalidateData = true;
         message = 'AQI must be non-negative number';
+    elseif (tempInput > 60)
+        invalidateData = true;
+        message = 'Temperature is too high.';
     end
 
- 
+
     if (invalidateData)
         msgbox(message);
     else
         aqiInterpolation = calculateAqi(tempData, rainData, aqiData, tempInput, rainInput);
-        disp(aqiInput);
-        disp(aqiInput - aqiInterpolation);
-    warning = false;
-    
-    if (abs(aqiInput - aqiInterpolation) > 25)
-        answer = questdlg('Inputs are difference too much from interpolation result', ...
-            'Do you want to continue update?', ...
-            'Yes','No thank you', 'No thank you');
-        if (answer == 'Yes') 
-            update = true;
+        invalidTemp = (tempInput > max(tempData)) || (tempInput < min(tempData));
+        invalidRain = rainInput > max(rainData);
+        invalidAqi = abs(aqiInput - aqiInterpolation) > 25;
+        
+        if (invalidTemp) 
+            update = askUserContinueUpdate('Temperature input entered is outside the range of historical data.');
         end
-    else 
-        update = true;
-    end
+        
+        if (update)
+            if (invalidRain)
+                update = askUserContinueUpdate('Amount of rain input entered exceeds the range of historical data.');
+            end
+        end
+        
+        if (update)
+            if (invalidAqi)
+                update = askUserContinueUpdate('Inputs are difference too much from interpolation result');
+            end
+        end
     end
 
     if update
@@ -1000,3 +1036,10 @@ else
         clear_Callback(hObject, eventdata, handles);
     end
 end
+
+function output = askUserContinueUpdate(question)
+    answer = questdlg(question, ...
+        'Do you want to continue update?', ...
+        'Yes','No thank you', 'No thank you');
+    output = answer == 'Yes';
+
