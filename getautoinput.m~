@@ -5,20 +5,20 @@ lengthInput = length(rainInterpol);
 aqiInterpol = zeros(size(rainInterpol));
 [~, temp, rain, aqi] = loadRealData();
 
-temp = temp(320 : 500);
-rain = rain(320 : 500);
-aqi = aqi(320 : 500);
+temp = temp(138 : 287);
+rain = rain(138 : 287);
+aqi = aqi()
 
 for index = 1 : lengthInput
     
     result = griddata(temp, rain, aqi, tempInterpol(index), rainInterpol(index));
     
-    if (isnan(result) || result <= 0 || result> 500)
+    if (isnan(result) || result < 0 || result> 500)
         [tempX, aqiX] = removeDuplicatedData(temp, rain);
         result = interp1(tempX, aqiX, tempInterpol(index));
     end
     
-    if (isnan(result) || result <= 0 || result > 500)
+    if (isnan(result) || result < 0 || result > 500)
         result = 0;
         [rainX, aqiX] = removeDuplicatedData(rain, aqi);
         result = interp1(rainX, aqiX, rainInterpol(index));

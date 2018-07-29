@@ -1,8 +1,8 @@
 [date, temp, rain, aqi] = loadRealData;
 startPos = getDatePosition(datetime(2017,3,6), date);
 endPos = getDatePosition(datetime(2018,3,30), date);
-aprStart = getDatePosition(datetime(2018,4,1), date);
-aprEnd = getDatePosition(datetime(2018,4,31), date);
+aprStart = getDatePosition(datetime(2018,7,1), date);
+aprEnd = getDatePosition(datetime(2018,7,29), date);
 [interTemp, interRain, interAqi] = getDataInRange(temp, rain, aqi, startPos, endPos);
 [aprTemp, aprRain, aprAqi] = getDataInRange(temp, rain, aqi, aprStart, aprEnd);
 
