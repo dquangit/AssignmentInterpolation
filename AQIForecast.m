@@ -971,12 +971,11 @@ set(handles.aqiUpdate,'String','');
 % --- Executes on button press in update.
 function update_Callback(hObject, eventdata, handles)
 global variable;
-update = false;
-[dateData, tempData, rainData, aqiData] = loadRealData();
-n = length(dateData);
-disp(variable);
+update = true;
+[~, tempData, rainData, aqiData] = loadRealData();
+
 if variable == 0
-   msgbox('Please, choose row to delete!');
+   msgbox('Please, choose row to update!');
 else
     aqiInput = get(handles.aqiUpdate, 'String');
     tempInput = get(handles.tempUpdate, 'String');
@@ -1000,7 +999,6 @@ else
         message = 'Temperature is too high.';
     end
 
-
     if (invalidateData)
         msgbox(message);
     else
@@ -1012,7 +1010,7 @@ else
         if (invalidTemp) 
             update = askUserContinueUpdate('Temperature input entered is outside the range of historical data.');
         end
-        
+     
         if (update)
             if (invalidRain)
                 update = askUserContinueUpdate('Amount of rain input entered exceeds the range of historical data.');

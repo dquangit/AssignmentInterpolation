@@ -24,7 +24,11 @@ function output = getForcastTemp(dateInput)
     [date, temp, ~] = loadForecastData();
     datePosition = getDatePosition(dateInput, date);
     if (datePosition ~= -1) 
-        output = temp(datePosition);
+        if (datePosition + 6 < length(temp))
+            output = temp(datePosition : datePosition + 6);
+        else
+            output = temp(datePosition : end);
+        end
     else
         output = -1;
     end

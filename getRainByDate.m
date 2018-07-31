@@ -24,7 +24,11 @@ function output = getForcastRain(dateInput)
     [date, ~, rain] = loadForecastData();
     datePosition = getDatePosition(dateInput, date);
     if (datePosition ~= -1) 
-        output = rain(datePosition);
+        if (datePosition + 6 < length(rain))
+            output = rain(datePosition : datePosition + 6);
+        else
+            output = rain(datePosition : end);
+        end
     else
         output = -1;
     end
