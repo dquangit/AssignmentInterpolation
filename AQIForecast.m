@@ -591,7 +591,7 @@ if (isempty(day) || isempty(aqiInput) || isempty(tempInput) || isempty(rainInput
 end
 
 [~, n] = size(dateData);
-update = false;
+update = true;
 isDuplicated = false;
 for index = 1 : n
     if isequal(dateInput, dateData(:,index))
